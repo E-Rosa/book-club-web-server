@@ -14,4 +14,7 @@ app.use((req, res, next) => {
 app.listen(4000, () => {
     console.log("server listening on port 4000");
 });
+app.all("/", (req, res) => {
+    res.sendStatus(200);
+});
 //# sourceMappingURL=server.js.map
