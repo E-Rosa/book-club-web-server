@@ -18,3 +18,7 @@ app.listen(4000, () => {
 app.all("/", (req: Request, res: Response)=>{
     res.sendStatus(200)
 })
+
+app.get("/users", (req: Request, res: Response)=>{
+  res.status(200).send({users:'none'})
+})
