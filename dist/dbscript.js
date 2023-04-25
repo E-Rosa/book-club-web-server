@@ -16,7 +16,7 @@ function createUser() {
     return __awaiter(this, void 0, void 0, function* () {
         return yield prisma.user.create({
             data: {
-                name: "Elias",
+                name: "Elias Rosa",
                 email: "elias_rrosa@Hotmail.com",
                 password: "goodpass"
             }

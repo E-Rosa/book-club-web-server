@@ -25,8 +25,9 @@ app.all("/", (req: Request, res: Response)=>{
 })
 
 app.post("/users", async (req: Request, res: Response)=>{
-  const users = await createUser()
-  res.status(200)
+  const {name, email, password} = req.body
+  const newUser = await prisma.user.create({data:{name:name,  email:email, password:password}})
+  res.status(200).send(newUser)
 })
 app.get("/users", async (req: Request, res: Response)=>{
   const users = await prisma.user.findMany();
