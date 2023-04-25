@@ -1,4 +1,7 @@
 import express, { Request, Response } from "express";
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient();
+
 const app = express();
 
 app.use((req: Request, res: Response, next: any) => {
@@ -19,6 +22,7 @@ app.all("/", (req: Request, res: Response)=>{
     res.sendStatus(200)
 })
 
-app.get("/users", (req: Request, res: Response)=>{
-  res.status(200).send({users:'none'})
+app.get("/users", async (req: Request, res: Response)=>{
+  const users = await prisma.user.findMany();
+  res.status(200).send(users)
 })

@@ -8,28 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
-const app = (0, express_1.default)();
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    next();
-});
-app.listen(4000, () => {
-    console.log("server listening on port 4000");
-});
-app.all("/", (req, res) => {
-    res.sendStatus(200);
-});
-app.get("/users", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield prisma.user.findMany();
-    res.status(200).send(users);
-}));
-//# sourceMappingURL=server.js.map
+function createUser() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield prisma.user.create({
+            data: {
+                name: "Elias",
+                email: "elias_rrosa@Hotmail.com",
+                password: "goodpass"
+            }
+        });
+    });
+}
+function main() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const users = yield prisma.user.findMany({ where: { name: "Elias" } });
+        console.log(users);
+    });
+}
+main()
+    .catch(e => { console.log(e); })
+    .finally(() => __awaiter(void 0, void 0, void 0, function* () { yield prisma.$disconnect(); }));
+//# sourceMappingURL=dbscript.js.map
