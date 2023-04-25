@@ -17,6 +17,7 @@ const dbscript_1 = require("./dbscript");
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
+app.use(express_1.default.json());
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "*");

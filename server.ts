@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 const app = express();
 
+app.use(express.json())
 app.use((req: Request, res: Response, next: any) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "*");
