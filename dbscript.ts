@@ -20,3 +20,5 @@ main()
     .catch(e=>{console.log(e)})
     .finally(async()=>{await prisma.$disconnect()})
 
+export {createUser}
+

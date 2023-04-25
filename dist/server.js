@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const dbscript_1 = require("./dbscript");
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
@@ -28,6 +29,10 @@ app.listen(4000, () => {
 app.all("/", (req, res) => {
     res.sendStatus(200);
 });
+app.post("/users", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const users = yield (0, dbscript_1.createUser)();
+    res.status(200);
+}));
 app.get("/users", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield prisma.user.findMany();
     res.status(200).send(users);

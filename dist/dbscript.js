@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createUser = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 function createUser() {
@@ -22,6 +23,7 @@ function createUser() {
         });
     });
 }
+exports.createUser = createUser;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const users = yield prisma.user.findMany({ where: { name: "Elias" } });

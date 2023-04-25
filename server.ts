@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import { createUser } from "./dbscript";
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient();
 
@@ -22,6 +23,10 @@ app.all("/", (req: Request, res: Response)=>{
     res.sendStatus(200)
 })
 
+app.post("/users", async (req: Request, res: Response)=>{
+  const users = await createUser()
+  res.status(200)
+})
 app.get("/users", async (req: Request, res: Response)=>{
   const users = await prisma.user.findMany();
   res.status(200).send(users)
