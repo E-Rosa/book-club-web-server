@@ -32,10 +32,12 @@ app.all("/", (req, res) => {
 app.post("/users", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password } = req.body;
     const newUser = yield prisma.user.create({ data: { name: name, email: email, password: password } });
+    yield prisma.$disconnect();
     res.status(200).send(newUser);
 }));
 app.get("/users", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield prisma.user.findMany();
+    yield prisma.$disconnect();
     res.status(200).send(users);
 }));
 //# sourceMappingURL=server.js.map
