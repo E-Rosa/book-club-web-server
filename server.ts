@@ -26,14 +26,18 @@ app.all("/", (req: Request, res: Response)=>{
 })
 
 app.post("/users", async (req: Request, res: Response)=>{
-  req.setTimeout(10000);
+  req.setTimeout(20000, ()=>{
+    console.log('timeout')
+  });
   const {name, email, password} = req.body
   const newUser = await prisma.user.create({data:{name:name,  email:email, password:password}})
   await prisma.$disconnect()
   res.status(200).send(newUser)
 })
 app.get("/users", async (req: Request, res: Response)=>{
-  req.setTimeout(10000);
+  req.setTimeout(20000, ()=>{
+    console.log('timeout')
+  });
   const users = await prisma.user.findMany();
   await prisma.$disconnect();
   res.status(200).send(users)

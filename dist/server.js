@@ -30,14 +30,18 @@ app.all("/", (req, res) => {
     res.sendStatus(200);
 });
 app.post("/users", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    req.setTimeout(10000);
+    req.setTimeout(20000, () => {
+        console.log('timeout');
+    });
     const { name, email, password } = req.body;
     const newUser = yield prisma.user.create({ data: { name: name, email: email, password: password } });
     yield prisma.$disconnect();
     res.status(200).send(newUser);
 }));
 app.get("/users", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    req.setTimeout(10000);
+    req.setTimeout(20000, () => {
+        console.log('timeout');
+    });
     const users = yield prisma.user.findMany();
     yield prisma.$disconnect();
     res.status(200).send(users);
