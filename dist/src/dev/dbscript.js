@@ -26,11 +26,11 @@ function createUser() {
 exports.createUser = createUser;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        const users = yield prisma.user.findMany({ where: { name: "Elias" } });
-        console.log(users);
+        const users = yield prisma.user.deleteMany();
     });
 }
 main()
+    .then((result) => [console.log(result)])
     .catch(e => { console.log(e); })
     .finally(() => __awaiter(void 0, void 0, void 0, function* () { yield prisma.$disconnect(); }));
 //# sourceMappingURL=dbscript.js.map

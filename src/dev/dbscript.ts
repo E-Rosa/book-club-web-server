@@ -12,11 +12,10 @@ async function createUser(){
 }
 
 async function main(){
-  const users = await prisma.user.findMany({where:{name:"Elias"}});
-  console.log(users)
-
+  const users = await prisma.user.deleteMany()
 }
 main()
+    .then((result)=>[console.log(result)])
     .catch(e=>{console.log(e)})
     .finally(async()=>{await prisma.$disconnect()})
 

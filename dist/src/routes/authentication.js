@@ -32,7 +32,7 @@ authenticationRouter
         res.status(200).send({ jwt: jwt, user: { name: user.name, id: user.id, email: user.email } });
     }
     catch (error) {
-        console.error("login failed");
+        console.error("login failed - ", error);
         res.status(500).send({ error: error });
     }
 }));
