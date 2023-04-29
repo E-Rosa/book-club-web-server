@@ -26,7 +26,8 @@ function createUser() {
 exports.createUser = createUser;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        const users = yield prisma.user.deleteMany();
+        const users = yield prisma.book.deleteMany();
+        return users;
     });
 }
 main()

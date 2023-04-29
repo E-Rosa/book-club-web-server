@@ -41,7 +41,7 @@ authenticationRouter
       console.log("signup success - email: " + createdUser.email);
       res.status(200).send({ message: "ok" });
     } catch (error) {
-      console.error("signup failed");
+      console.error("signup failed - error is: ", error);
       res.status(500).send({error: error});
     }
   });

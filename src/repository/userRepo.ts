@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 class UserRepo {
   static async getUserByEmailAndPassword(email: string, password: string) {
     try {
+      
       const user  = await prisma.user.findFirst({
         where: { email: email, password: password },
       });
