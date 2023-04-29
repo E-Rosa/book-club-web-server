@@ -11,8 +11,10 @@ async function createUser(){
   })
 }
 
+
 async function main(){
-  const users = await prisma.user.deleteMany()
+  const users = await prisma.book.deleteMany()
+  return users
 }
 main()
     .then((result)=>[console.log(result)])
