@@ -12,15 +12,18 @@ datasource db {
 
 model User {
   id            String @id @default(uuid())
-  name          String @unique
+  name          String
   email         String @unique
   password      String
   favoriteBooks Book[]
+  postedBooks   Book[] @relation("UserToBooks")
 }
 
 model Book {
-  id    String @id @default(uuid())
-  title String @unique
-  Author   User?   @relation(fields: [authorId], references: [id])
-  authorId String?
+  id           String @id @default(uuid())
+  postAuthor   User   @relation("UserToBooks", fields: [postAuthorId], references: [id])
+  postAuthorId String
+  title        String @unique
+  author       String
+  voters       User[]
 }

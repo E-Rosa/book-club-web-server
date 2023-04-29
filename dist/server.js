@@ -14,36 +14,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const client_1 = require("@prisma/client");
+const authentication_1 = __importDefault(require("./src/routes/authentication"));
+const book_1 = __importDefault(require("./src/routes/book"));
 const prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: false }));
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.setHeader("Access-Control-Allow-Headers", "*");
+    res.setHeader("Access-Control-Max-Age", 86400);
     next();
 });
+app.use("/api/authentication", authentication_1.default);
+app.use("/api/books", book_1.default);
 app.listen(4000, () => {
     console.log("server listening on port 4000");
 });
 app.all("/", (req, res) => {
-    res.sendStatus(200);
+    res.sendStatus(404);
 });
 app.post("/users", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    /*   req.setTimeout(20000, ()=>{
-        console.log('timeout')
-      }); */
     const { name, email, password } = req.body;
     const newUser = yield prisma.user.create({ data: { name: name, email: email, password: password } });
-    /*   await prisma.$disconnect() */
     res.status(200).send(newUser);
 }));
 app.get("/users", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    /*   req.setTimeout(20000, ()=>{
-        console.log('timeout')
-      }); */
     const users = yield prisma.user.findMany();
-    /*   await prisma.$disconnect(); */
     res.status(200).send(users);
 }));
 //# sourceMappingURL=server.js.map
