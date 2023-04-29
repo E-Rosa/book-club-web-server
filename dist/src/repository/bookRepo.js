@@ -28,7 +28,7 @@ class BookRepo {
                 });
             }
             catch (error) {
-                throw new Error("getBooks failed");
+                throw error;
             }
         });
     }
