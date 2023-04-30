@@ -12,16 +12,20 @@ authenticationRouter
     console.log("POST api/authentication/login");
     try {
       const { email, password } = req.body;
+      console.log(`received - email:${email}, password:${password}`);
       const hashedPass = AuthenticationService.hashPassword(password);
+      console.log(`generated - hashed password: ${hashedPass}`)
       const user = await UserRepo.getUserByEmailAndPassword(email, hashedPass);
+      console.log(`queried - getUserByEmailAndPassword user: ${JSON.stringify(user)}`)
       const jwt = sign(
         { id: user.id, email: user.email },
         process.env.SECRET_KEY as string
       );
-      console.log("login success - " + email);
+      console.log(`generated - jwt: ${jwt}`)
+      console.log("login success");
       res.status(200).send({ jwt: jwt, user:{name: user.name, id: user.id, email: user.email}});
     } catch (error) {
-      console.error("login failed error was - ", error);
+      console.error("login failed - ", error);
       res.status(500).send({error: error});
     }
   });

@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 class BookRepo {
   static async getBooks() {
     try {
-      return await prisma.book.findMany({
+      const book = await prisma.book.findMany({
         include: {
           voters: {
             select: {
@@ -15,17 +15,16 @@ class BookRepo {
           },
         },
       });
+      await prisma.$disconnect();
+      return book;
     } catch (error) {
-      throw error
+      await prisma.$disconnect();
+      throw error;
     }
   }
-  static async postBook(
-    postAuthorId: string,
-    title: string,
-    author: string
-  ) {
+  static async postBook(postAuthorId: string, title: string, author: string) {
     try {
-      return await prisma.book.create({
+      const book = await prisma.book.create({
         data: {
           postAuthorId: postAuthorId,
           title: title,
@@ -35,13 +34,16 @@ class BookRepo {
           },
         },
       });
+      await prisma.$disconnect();
+      return book;
     } catch (error) {
+      await prisma.$disconnect();
       throw new Error("postBook failed - " + error);
     }
   }
   static async voteOnBook(userId: string, bookId: string) {
     try {
-      return await prisma.book.update({
+      const book = await prisma.book.update({
         where: {
           id: bookId,
         },
@@ -51,13 +53,16 @@ class BookRepo {
           },
         },
       });
+      await prisma.$disconnect();
+      return book;
     } catch (error) {
+      await prisma.$disconnect();
       throw new Error("voteOnBook failed - " + error);
     }
   }
   static async unvoteOnBook(userId: string, bookId: string) {
     try {
-      return await prisma.book.update({
+      const book = await prisma.book.update({
         where: {
           id: bookId,
         },
@@ -67,7 +72,10 @@ class BookRepo {
           },
         },
       });
+      await prisma.$disconnect()
+      return book
     } catch (error) {
+      await prisma.$disconnect()
       throw new Error("unvoteOnBook failed - " + error);
     }
   }

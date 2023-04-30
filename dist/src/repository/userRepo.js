@@ -21,9 +21,11 @@ class UserRepo {
                 if (user == null) {
                     throw new Error("could not get user by email and password");
                 }
+                yield prisma.$disconnect();
                 return user;
             }
             catch (error) {
+                yield prisma.$disconnect();
                 throw new Error("could not get user by email and password");
             }
         });
@@ -37,9 +39,11 @@ class UserRepo {
                 if (user == null) {
                     throw new Error("could not get user by email");
                 }
+                yield prisma.$disconnect();
                 return user;
             }
             catch (error) {
+                yield prisma.$disconnect();
                 throw new Error("could not get user by email");
             }
         });

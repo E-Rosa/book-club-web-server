@@ -15,7 +15,7 @@ class BookRepo {
     static getBooks() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield prisma.book.findMany({
+                const book = yield prisma.book.findMany({
                     include: {
                         voters: {
                             select: {
@@ -26,8 +26,11 @@ class BookRepo {
                         },
                     },
                 });
+                yield prisma.$disconnect();
+                return book;
             }
             catch (error) {
+                yield prisma.$disconnect();
                 throw error;
             }
         });
@@ -35,7 +38,7 @@ class BookRepo {
     static postBook(postAuthorId, title, author) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield prisma.book.create({
+                const book = yield prisma.book.create({
                     data: {
                         postAuthorId: postAuthorId,
                         title: title,
@@ -45,8 +48,11 @@ class BookRepo {
                         },
                     },
                 });
+                yield prisma.$disconnect();
+                return book;
             }
             catch (error) {
+                yield prisma.$disconnect();
                 throw new Error("postBook failed - " + error);
             }
         });
@@ -54,7 +60,7 @@ class BookRepo {
     static voteOnBook(userId, bookId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield prisma.book.update({
+                const book = yield prisma.book.update({
                     where: {
                         id: bookId,
                     },
@@ -64,8 +70,11 @@ class BookRepo {
                         },
                     },
                 });
+                yield prisma.$disconnect();
+                return book;
             }
             catch (error) {
+                yield prisma.$disconnect();
                 throw new Error("voteOnBook failed - " + error);
             }
         });
@@ -73,7 +82,7 @@ class BookRepo {
     static unvoteOnBook(userId, bookId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield prisma.book.update({
+                const book = yield prisma.book.update({
                     where: {
                         id: bookId,
                     },
@@ -83,8 +92,11 @@ class BookRepo {
                         },
                     },
                 });
+                yield prisma.$disconnect();
+                return book;
             }
             catch (error) {
+                yield prisma.$disconnect();
                 throw new Error("unvoteOnBook failed - " + error);
             }
         });
