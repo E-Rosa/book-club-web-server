@@ -12,12 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const _prisma_1 = __importDefault(require("./_prisma"));
+const prisma_1 = __importDefault(require("./prisma"));
 class UserRepo {
     static getUserByEmailAndPassword(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield _prisma_1.default.user.findFirst({
+                const user = yield prisma_1.default.user.findFirst({
                     where: { email: email, password: password },
                 });
                 if (user == null) {
@@ -33,7 +33,7 @@ class UserRepo {
     static getUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield _prisma_1.default.user.findFirst({
+                const user = yield prisma_1.default.user.findFirst({
                     where: { email: email },
                 });
                 if (user == null) {

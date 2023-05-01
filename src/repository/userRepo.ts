@@ -1,4 +1,4 @@
-import prisma from "./_prisma";
+import prisma from "./prisma";
 
 class UserRepo {
   static async getUserByEmailAndPassword(email: string, password: string) {

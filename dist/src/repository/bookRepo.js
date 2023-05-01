@@ -12,12 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const _prisma_1 = __importDefault(require("./_prisma"));
+const prisma_1 = __importDefault(require("./prisma"));
 class BookRepo {
     static getBooks() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield _prisma_1.default.book.findMany({
+                const book = yield prisma_1.default.book.findMany({
                     include: {
                         voters: {
                             select: {
@@ -38,7 +38,7 @@ class BookRepo {
     static postBook(postAuthorId, title, author) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield _prisma_1.default.book.create({
+                const book = yield prisma_1.default.book.create({
                     data: {
                         postAuthorId: postAuthorId,
                         title: title,
@@ -58,7 +58,7 @@ class BookRepo {
     static voteOnBook(userId, bookId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield _prisma_1.default.book.update({
+                const book = yield prisma_1.default.book.update({
                     where: {
                         id: bookId,
                     },
@@ -78,7 +78,7 @@ class BookRepo {
     static unvoteOnBook(userId, bookId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield _prisma_1.default.book.update({
+                const book = yield prisma_1.default.book.update({
                     where: {
                         id: bookId,
                     },

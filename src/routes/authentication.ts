@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { AuthenticationService } from "../services/authenticationService";
 import UserRepo from "../repository/userRepo";
 import { sign } from "jsonwebtoken";
-import prisma from "../repository/_prisma";
+import prisma from "../repository/prisma";
 
 const authenticationRouter = Router();
 authenticationRouter
