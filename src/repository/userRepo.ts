@@ -12,9 +12,9 @@ class UserRepo {
       }
       await prisma.$disconnect()
       return user
-    } catch (error) {
+    } catch (error: any) {
       await prisma.$disconnect()
-      throw new Error("could not get user by email and password");
+      throw new Error("could not get user by email and password - " + JSON.stringify(error));
     }
   }
   static async getUserByEmail(email: string) {

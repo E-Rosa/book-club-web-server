@@ -26,7 +26,7 @@ class UserRepo {
             }
             catch (error) {
                 yield prisma.$disconnect();
-                throw new Error("could not get user by email and password");
+                throw new Error("could not get user by email and password - " + JSON.stringify(error));
             }
         });
     }
