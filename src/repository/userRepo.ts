@@ -11,7 +11,7 @@ class UserRepo {
       }
       return user
     } catch (error: any) {
-      throw new Error("could not get user by email and password - " + JSON.stringify(error));
+      throw new Error(error);
     }
   }
   static async getUserByEmail(email: string) {

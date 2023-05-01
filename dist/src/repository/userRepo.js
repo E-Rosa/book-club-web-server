@@ -26,7 +26,7 @@ class UserRepo {
                 return user;
             }
             catch (error) {
-                throw new Error("could not get user by email and password - " + JSON.stringify(error));
+                throw new Error(error);
             }
         });
     }

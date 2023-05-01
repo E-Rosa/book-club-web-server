@@ -1,4 +1,5 @@
 import { Request, Response, Router } from "express";
+import { PrismaClient } from "@prisma/client";
 import { AuthenticationService } from "../services/authenticationService";
 import UserRepo from "../repository/userRepo";
 import { sign } from "jsonwebtoken";
