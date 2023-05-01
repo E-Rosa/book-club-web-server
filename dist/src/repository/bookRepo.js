@@ -8,14 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
+const _prisma_1 = __importDefault(require("./_prisma"));
 class BookRepo {
     static getBooks() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield prisma.book.findMany({
+                const book = yield _prisma_1.default.book.findMany({
                     include: {
                         voters: {
                             select: {
@@ -26,11 +28,9 @@ class BookRepo {
                         },
                     },
                 });
-                yield prisma.$disconnect();
                 return book;
             }
             catch (error) {
-                yield prisma.$disconnect();
                 throw error;
             }
         });
@@ -38,7 +38,7 @@ class BookRepo {
     static postBook(postAuthorId, title, author) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield prisma.book.create({
+                const book = yield _prisma_1.default.book.create({
                     data: {
                         postAuthorId: postAuthorId,
                         title: title,
@@ -48,11 +48,9 @@ class BookRepo {
                         },
                     },
                 });
-                yield prisma.$disconnect();
                 return book;
             }
             catch (error) {
-                yield prisma.$disconnect();
                 throw new Error("postBook failed - " + error);
             }
         });
@@ -60,7 +58,7 @@ class BookRepo {
     static voteOnBook(userId, bookId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield prisma.book.update({
+                const book = yield _prisma_1.default.book.update({
                     where: {
                         id: bookId,
                     },
@@ -70,11 +68,9 @@ class BookRepo {
                         },
                     },
                 });
-                yield prisma.$disconnect();
                 return book;
             }
             catch (error) {
-                yield prisma.$disconnect();
                 throw new Error("voteOnBook failed - " + error);
             }
         });
@@ -82,7 +78,7 @@ class BookRepo {
     static unvoteOnBook(userId, bookId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield prisma.book.update({
+                const book = yield _prisma_1.default.book.update({
                     where: {
                         id: bookId,
                     },
@@ -92,11 +88,9 @@ class BookRepo {
                         },
                     },
                 });
-                yield prisma.$disconnect();
                 return book;
             }
             catch (error) {
-                yield prisma.$disconnect();
                 throw new Error("unvoteOnBook failed - " + error);
             }
         });

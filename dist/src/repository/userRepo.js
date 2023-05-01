@@ -8,24 +8,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
+const _prisma_1 = __importDefault(require("./_prisma"));
 class UserRepo {
     static getUserByEmailAndPassword(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield prisma.user.findFirst({
+                const user = yield _prisma_1.default.user.findFirst({
                     where: { email: email, password: password },
                 });
                 if (user == null) {
                     throw new Error("could not get user by email and password");
                 }
-                yield prisma.$disconnect();
                 return user;
             }
             catch (error) {
-                yield prisma.$disconnect();
                 throw new Error("could not get user by email and password - " + JSON.stringify(error));
             }
         });
@@ -33,17 +33,15 @@ class UserRepo {
     static getUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield prisma.user.findFirst({
+                const user = yield _prisma_1.default.user.findFirst({
                     where: { email: email },
                 });
                 if (user == null) {
                     throw new Error("could not get user by email");
                 }
-                yield prisma.$disconnect();
                 return user;
             }
             catch (error) {
-                yield prisma.$disconnect();
                 throw new Error("could not get user by email");
             }
         });

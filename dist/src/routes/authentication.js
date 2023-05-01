@@ -13,11 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const client_1 = require("@prisma/client");
 const authenticationService_1 = require("../services/authenticationService");
 const userRepo_1 = __importDefault(require("../repository/userRepo"));
 const jsonwebtoken_1 = require("jsonwebtoken");
-const prisma = new client_1.PrismaClient();
+const _prisma_1 = __importDefault(require("../repository/_prisma"));
 const authenticationRouter = (0, express_1.Router)();
 authenticationRouter
     .route("/login")
@@ -46,7 +45,7 @@ authenticationRouter
     console.log("POST api/authentication/signup");
     try {
         const { email, password, name } = req.body;
-        const createdUser = yield prisma.user.create({
+        const createdUser = yield _prisma_1.default.user.create({
             data: {
                 email: email,
                 password: authenticationService_1.AuthenticationService.hashPassword(password),

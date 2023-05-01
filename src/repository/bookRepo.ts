@@ -1,5 +1,4 @@
-import { PrismaClient, User } from "@prisma/client";
-const prisma = new PrismaClient();
+import prisma from "./_prisma";
 
 class BookRepo {
   static async getBooks() {
@@ -15,10 +14,9 @@ class BookRepo {
           },
         },
       });
-      await prisma.$disconnect();
+
       return book;
     } catch (error) {
-      await prisma.$disconnect();
       throw error;
     }
   }
@@ -34,10 +32,9 @@ class BookRepo {
           },
         },
       });
-      await prisma.$disconnect();
+
       return book;
     } catch (error) {
-      await prisma.$disconnect();
       throw new Error("postBook failed - " + error);
     }
   }
@@ -53,10 +50,9 @@ class BookRepo {
           },
         },
       });
-      await prisma.$disconnect();
+
       return book;
     } catch (error) {
-      await prisma.$disconnect();
       throw new Error("voteOnBook failed - " + error);
     }
   }
@@ -72,10 +68,9 @@ class BookRepo {
           },
         },
       });
-      await prisma.$disconnect()
-      return book
+
+      return book;
     } catch (error) {
-      await prisma.$disconnect()
       throw new Error("unvoteOnBook failed - " + error);
     }
   }

@@ -1,9 +1,8 @@
 import { Request, Response, Router } from "express";
-import { PrismaClient } from "@prisma/client";
 import { AuthenticationService } from "../services/authenticationService";
 import UserRepo from "../repository/userRepo";
-import { verify, sign } from "jsonwebtoken";
-const prisma = new PrismaClient();
+import { sign } from "jsonwebtoken";
+import prisma from "../repository/_prisma";
 
 const authenticationRouter = Router();
 authenticationRouter
