@@ -8,16 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const prisma_1 = __importDefault(require("./prisma"));
+const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient();
 class BookRepo {
     static getBooks() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield prisma_1.default.book.findMany({
+                const book = yield prisma.book.findMany({
                     include: {
                         voters: {
                             select: {
@@ -38,7 +36,7 @@ class BookRepo {
     static postBook(postAuthorId, title, author) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield prisma_1.default.book.create({
+                const book = yield prisma.book.create({
                     data: {
                         postAuthorId: postAuthorId,
                         title: title,
@@ -58,7 +56,7 @@ class BookRepo {
     static voteOnBook(userId, bookId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield prisma_1.default.book.update({
+                const book = yield prisma.book.update({
                     where: {
                         id: bookId,
                     },
@@ -78,7 +76,7 @@ class BookRepo {
     static unvoteOnBook(userId, bookId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const book = yield prisma_1.default.book.update({
+                const book = yield prisma.book.update({
                     where: {
                         id: bookId,
                     },

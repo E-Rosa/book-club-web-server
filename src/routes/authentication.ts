@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { AuthenticationService } from "../services/authenticationService";
 import UserRepo from "../repository/userRepo";
 import { sign } from "jsonwebtoken";
-import prisma from "../repository/prisma";
+
 
 const authenticationRouter = Router();
 authenticationRouter
@@ -34,13 +34,7 @@ authenticationRouter
     console.log("POST api/authentication/signup");
     try {
       const { email, password, name } = req.body;
-      const createdUser = await prisma.user.create({
-        data: {
-          email: email,
-          password: AuthenticationService.hashPassword(password),
-          name: name,
-        },
-      });
+      const createdUser = await UserRepo.createUser(email, password, name)
       console.log("signup success - email: " + createdUser.email);
       res.status(200).send({ message: "ok" });
     } catch (error) {

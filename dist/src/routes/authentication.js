@@ -16,7 +16,6 @@ const express_1 = require("express");
 const authenticationService_1 = require("../services/authenticationService");
 const userRepo_1 = __importDefault(require("../repository/userRepo"));
 const jsonwebtoken_1 = require("jsonwebtoken");
-const prisma_1 = __importDefault(require("../repository/prisma"));
 const authenticationRouter = (0, express_1.Router)();
 authenticationRouter
     .route("/login")
@@ -45,13 +44,7 @@ authenticationRouter
     console.log("POST api/authentication/signup");
     try {
         const { email, password, name } = req.body;
-        const createdUser = yield prisma_1.default.user.create({
-            data: {
-                email: email,
-                password: authenticationService_1.AuthenticationService.hashPassword(password),
-                name: name,
-            },
-        });
+        const createdUser = yield userRepo_1.default.createUser(email, password, name);
         console.log("signup success - email: " + createdUser.email);
         res.status(200).send({ message: "ok" });
     }
