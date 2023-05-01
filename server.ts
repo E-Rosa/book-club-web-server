@@ -1,9 +1,6 @@
 import express, { Request, Response } from "express";
-import cors from 'cors';
-import { PrismaClient } from '@prisma/client'
 import authenticationRouter from "./src/routes/authentication";
 import bookRouter from "./src/routes/book";
-const prisma = new PrismaClient();
 
 const app = express();
 
@@ -17,7 +14,6 @@ app.use((req: Request, res: Response, next: any) => {
   res.setHeader("Access-Control-Max-Age", 86400)
   next();
 });
-
 
 app.use("/api/authentication", authenticationRouter);
 app.use("/api/books", bookRouter)
