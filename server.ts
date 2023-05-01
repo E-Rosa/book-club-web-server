@@ -4,7 +4,6 @@ import bookRouter from "./src/routes/book";
 
 const app = express();
 
-
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
 app.use((req: Request, res: Response, next: any) => {
