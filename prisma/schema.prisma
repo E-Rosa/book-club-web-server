@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -16,8 +16,9 @@ model User {
   name          String
   email         String @unique
   password      String
-  favoriteBooks Book[]
+  favoriteBooks Book[] @relation("VotedBooks")
   postedBooks   Book[] @relation("UserToBooks")
+  readBooks     Book[] @relation("ReadBooks")
 }
 
 model Book {
@@ -26,5 +27,6 @@ model Book {
   postAuthorId String
   title        String @unique
   author       String
-  voters       User[]
+  voters       User[] @relation("VotedBooks")
+  readers      User[] @relation("ReadBooks")
 }
