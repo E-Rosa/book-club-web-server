@@ -6,9 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  //directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -22,11 +22,19 @@ model User {
 }
 
 model Book {
-  id           String @id @default(uuid())
-  postAuthor   User   @relation("UserToBooks", fields: [postAuthorId], references: [id])
+  id           String  @id @default(uuid())
+  postAuthor   User    @relation("UserToBooks", fields: [postAuthorId], references: [id])
   postAuthorId String
-  title        String @unique
+  title        String  @unique
   author       String
-  voters       User[] @relation("VotedBooks")
-  readers      User[] @relation("ReadBooks")
+  voters       User[]  @relation("VotedBooks")
+  readers      User[]  @relation("ReadBooks")
+  isRead       Boolean @default(false)
+}
+
+model UnauthorizedUser{
+    id            String @id @default(uuid())
+    name          String
+    email         String @unique
+    password      String
 }

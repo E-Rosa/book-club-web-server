@@ -16,6 +16,9 @@ class AuthenticationService {
       const token = authorizationHeader.split(" ")[1];
       const verifyResult = verify(token, process.env.SECRET_KEY as string) as UserPayload;
       const {id, email} =  verifyResult;
+      if(!id || !email){
+        throw new Error("authorizationHeader invalid - not ID or email extracted from verify()")
+      }
       return {id: id, email: email}
     }
     catch (error){

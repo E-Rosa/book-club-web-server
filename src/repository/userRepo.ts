@@ -42,6 +42,52 @@ class UserRepo {
       throw error;
     }
   }
+  static async createUnauthorizedUser(
+    email: string,
+    password: string,
+    name: string
+  ) {
+    try {
+      return await prisma.unauthorizedUser.create({
+        data: {
+          email: email,
+          password: AuthenticationService.hashPassword(password),
+          name: name,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async acceptSignup(email: string) {
+    try {
+      const unauthorizedUser = await prisma.unauthorizedUser.delete({
+        where: { email: email },
+      });
+      return await prisma.user.create({
+        data: {
+          email: email,
+          name: unauthorizedUser.name,
+          password: unauthorizedUser.password,
+          id: unauthorizedUser.id,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async checkEmailAvailability(email: string) {
+    try {
+      const isEmailUsed = await prisma.user.findFirst({
+        where: { email: email },
+      });
+      if (isEmailUsed != null) {
+        throw new Error("email in use");
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default UserRepo;

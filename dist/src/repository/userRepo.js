@@ -61,6 +61,57 @@ class UserRepo {
             }
         });
     }
+    static createUnauthorizedUser(email, password, name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield prisma.unauthorizedUser.create({
+                    data: {
+                        email: email,
+                        password: authenticationService_1.AuthenticationService.hashPassword(password),
+                        name: name,
+                    },
+                });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    static acceptSignup(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const unauthorizedUser = yield prisma.unauthorizedUser.delete({
+                    where: { email: email },
+                });
+                return yield prisma.user.create({
+                    data: {
+                        email: email,
+                        name: unauthorizedUser.name,
+                        password: unauthorizedUser.password,
+                        id: unauthorizedUser.id,
+                    },
+                });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    static checkEmailAvailability(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const isEmailUsed = yield prisma.user.findFirst({
+                    where: { email: email },
+                });
+                if (isEmailUsed != null) {
+                    throw new Error("email in use");
+                }
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
 }
 exports.default = UserRepo;
 //# sourceMappingURL=userRepo.js.map

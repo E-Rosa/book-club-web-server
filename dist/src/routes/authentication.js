@@ -20,6 +20,7 @@ const authenticationRouter = (0, express_1.Router)();
 authenticationRouter
     .route("/login")
     .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //login
     console.log("POST api/authentication/login");
     try {
         const { email, password } = req.body;
@@ -31,7 +32,12 @@ authenticationRouter
         const jwt = (0, jsonwebtoken_1.sign)({ id: user.id, email: user.email }, process.env.SECRET_KEY);
         console.log(`generated - jwt: ${jwt}`);
         console.log("login success");
-        res.status(200).send({ jwt: jwt, user: { name: user.name, id: user.id, email: user.email } });
+        res
+            .status(200)
+            .send({
+            jwt: jwt,
+            user: { name: user.name, id: user.id, email: user.email },
+        });
     }
     catch (error) {
         console.error("login failed - ", error);
@@ -41,6 +47,7 @@ authenticationRouter
 authenticationRouter
     .route("/signup")
     .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //signup
     console.log("POST api/authentication/signup");
     try {
         const { email, password, name } = req.body;
@@ -50,6 +57,24 @@ authenticationRouter
     }
     catch (error) {
         console.error("signup failed - error is: ", error);
+        res.status(500).send({ error: error });
+    }
+}));
+authenticationRouter
+    .route("/signup/request")
+    .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //request an account
+    console.log("POST api/authentication/signup/request");
+    try {
+        const { email, password, name } = req.body;
+        yield userRepo_1.default.checkEmailAvailability(email);
+        console.log("email available");
+        const createdUser = yield userRepo_1.default.createUnauthorizedUser(email, password, name);
+        console.log("signup request success - unauthorized user email: " + createdUser.email);
+        res.status(200).send({ message: "ok" });
+    }
+    catch (error) {
+        console.error("signup request failed - error is: ", error);
         res.status(500).send({ error: error });
     }
 }));

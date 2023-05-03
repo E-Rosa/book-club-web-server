@@ -16,20 +16,8 @@ const authenticationService_1 = require("../services/authenticationService");
 const express_1 = require("express");
 const bookRepo_1 = __importDefault(require("../repository/bookRepo"));
 const bookRouter = (0, express_1.Router)();
-bookRouter
-    .route("/")
-    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
-        const books = yield bookRepo_1.default.getBooks();
-        console.log("get books success");
-        res.status(200).send(books);
-    }
-    catch (error) {
-        console.error("get books failed - " + error);
-        res.status(500).send({ error: "failed to get books - server error" });
-    }
-}))
+//post a book
+bookRouter.route("/")
     .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
@@ -42,7 +30,50 @@ bookRouter
         console.error("post book failed - " + error);
         res.status(500).send({ error: "failed to post books - server error" });
     }
+}))
+    .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //edit a book
+    try {
+        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
+        const { author, title, id } = req.body;
+        const updatedBook = yield bookRepo_1.default.updateBook(id, author, title);
+        console.log("update book success\n book: " + title + " \n user: " + user.email);
+        res.status(200).send(updatedBook);
+    }
+    catch (error) {
+        console.error("update book failed - " + error);
+        res.status(500).send({ error: "failed to update book - server error" });
+    }
 }));
+//get suggested books
+bookRouter.route("/suggested").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
+        const books = yield bookRepo_1.default.getBooksWithVoters();
+        console.log("get suggested books success");
+        res.status(200).send(books);
+    }
+    catch (error) {
+        console.error("get suggested books failed - " + error);
+        res
+            .status(500)
+            .send({ error: "failed to get suggested books - server error" });
+    }
+}));
+//get read books
+bookRouter.route("/read").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
+        const books = yield bookRepo_1.default.getBooksWithReaders();
+        console.log("get read books success");
+        res.status(200).send(books);
+    }
+    catch (error) {
+        console.error("get read books failed - " + error);
+        res.status(500).send({ error: "failed to get read books - server error" });
+    }
+}));
+//unvote on book
 bookRouter.route("/unvote/:id").put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
@@ -56,6 +87,7 @@ bookRouter.route("/unvote/:id").put((req, res) => __awaiter(void 0, void 0, void
         res.status(500).send({ error: "failed to unvote on books - server error" });
     }
 }));
+//vote on book
 bookRouter.route("/vote/:id").put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
@@ -67,6 +99,34 @@ bookRouter.route("/vote/:id").put((req, res) => __awaiter(void 0, void 0, void 0
     catch (error) {
         console.error("vote on book failed - " + error);
         res.status(500).send({ error: "failed to vote on books - server error" });
+    }
+}));
+//mark book as read
+bookRouter.route("/read/:id").put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
+        const bookId = req.params.id;
+        const book = yield bookRepo_1.default.readBook(user.id, bookId);
+        console.log("mark as read success\n book: " + book.title + " \n user: " + user.email);
+        res.status(200).send(book);
+    }
+    catch (error) {
+        console.error("mark as read failed - " + error);
+        res.status(500).send({ error: "failed to mark as read - server error" });
+    }
+}));
+//mark book as unread
+bookRouter.route("/unread/:id").put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
+        const bookId = req.params.id;
+        const book = yield bookRepo_1.default.unreadBook(user.id, bookId);
+        console.log("mark book as unread success\n book: " + book.title + " \n user: " + user.email);
+        res.status(200).send(book);
+    }
+    catch (error) {
+        console.error("mark book as unread failed - " + error);
+        res.status(500).send({ error: "failed to mark book as unread - server error" });
     }
 }));
 exports.default = bookRouter;
