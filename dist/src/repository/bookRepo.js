@@ -34,6 +34,43 @@ class BookRepo {
             }
         });
     }
+    static getBooksWithVotersPaginated(skip) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const book = yield prisma.book.findMany({
+                    skip: skip,
+                    take: 10,
+                    where: { isRead: false },
+                    include: {
+                        voters: {
+                            select: {
+                                name: true,
+                                email: true,
+                                id: true,
+                            },
+                        },
+                    },
+                });
+                return book;
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    static getQuantityOfBooksSuggested() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const quantity = yield prisma.book.count({
+                    where: { isRead: false },
+                });
+                return quantity;
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     static getBooksWithReaders() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -52,6 +89,43 @@ class BookRepo {
                     },
                 });
                 return book;
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    static getBooksWithReadersPaginated(skip) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const book = yield prisma.book.findMany({
+                    skip: skip,
+                    take: 10,
+                    where: { isRead: true },
+                    include: {
+                        readers: {
+                            select: {
+                                name: true,
+                                email: true,
+                                id: true,
+                            },
+                        },
+                    },
+                });
+                return book;
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    static getQuantityOfBooksReadByClub() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const quantity = yield prisma.book.count({
+                    where: { isRead: true },
+                });
+                return quantity;
             }
             catch (error) {
                 throw error;

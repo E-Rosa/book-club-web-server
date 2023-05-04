@@ -49,6 +49,22 @@ bookRouter.route("/suggested").get(async (req: Request, res: Response) => {
       .send({ error: "failed to get suggested books - server error" });
   }
 });
+//get suggested books paginated
+bookRouter.route("/suggested/:skip").get(async (req: Request, res: Response) => {
+  try {
+    const user = AuthenticationService.authenticate(req.headers.authorization);
+    const books = await BookRepo.getBooksWithVotersPaginated(parseInt(req.params.skip));
+    console.log("get suggested books paginated success");
+    const suggestedBooksQuantity = await BookRepo.getQuantityOfBooksSuggested();
+    console.log("got quantity of books suggested: ", suggestedBooksQuantity)
+    res.status(200).send({books: books, count:suggestedBooksQuantity});
+  } catch (error) {
+    console.error("get suggested books paginated failed - " + error);
+    res
+      .status(500)
+      .send({ error: "failed to get suggested books paginated - server error" });
+  }
+});
 
 //get read books
 bookRouter.route("/read").get(async (req: Request, res: Response) => {
@@ -60,6 +76,20 @@ bookRouter.route("/read").get(async (req: Request, res: Response) => {
   } catch (error) {
     console.error("get read books failed - " + error);
     res.status(500).send({ error: "failed to get read books - server error" });
+  }
+});
+//get read books paginated
+bookRouter.route("/read/:skip").get(async (req: Request, res: Response) => {
+  try {
+    const user = AuthenticationService.authenticate(req.headers.authorization);
+    const books = await BookRepo.getBooksWithReadersPaginated(parseInt(req.params.skip));
+    console.log("get read books paginated success");
+    const readBooksQuantity = await BookRepo.getQuantityOfBooksReadByClub();
+    console.log("got quantity of books read by club: ", readBooksQuantity)
+    res.status(200).send({books:books, count:readBooksQuantity});
+  } catch (error) {
+    console.error("get read books paginated failed - " + error);
+    res.status(500).send({ error: "failed to get read books paginated - server error" });
   }
 });
 

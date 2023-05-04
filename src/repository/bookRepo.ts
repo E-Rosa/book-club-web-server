@@ -23,6 +23,39 @@ class BookRepo {
       throw error;
     }
   }
+  static async getBooksWithVotersPaginated(skip: number) {
+    try {
+      const book = await prisma.book.findMany({
+        skip: skip,
+        take: 10,
+        where: { isRead: false },
+        include: {
+          voters: {
+            select: {
+              name: true,
+              email: true,
+              id: true,
+            },
+          },
+        },
+      });
+
+      return book;
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async getQuantityOfBooksSuggested() {
+    try {
+      const quantity = await prisma.book.count({
+        where: { isRead: false },
+      });
+
+      return quantity;
+    } catch (error) {
+      throw error;
+    }
+  }
   static async getBooksWithReaders() {
     try {
       const book = await prisma.book.findMany({
@@ -41,6 +74,39 @@ class BookRepo {
       });
 
       return book;
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async getBooksWithReadersPaginated(skip: number) {
+    try {
+      const book = await prisma.book.findMany({
+        skip: skip,
+        take: 10,
+        where: { isRead: true },
+        include: {
+          readers: {
+            select: {
+              name: true,
+              email: true,
+              id: true,
+            },
+          },
+        },
+      });
+
+      return book;
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async getQuantityOfBooksReadByClub() {
+    try {
+      const quantity = await prisma.book.count({
+        where: { isRead: true },
+      });
+
+      return quantity;
     } catch (error) {
       throw error;
     }
@@ -155,7 +221,7 @@ class BookRepo {
   static async markBookAsReadByClub(bookId: string) {
     try {
       const bookMarkAsReadByClub = await prisma.book.update({
-        where:{id: bookId},
+        where: { id: bookId },
         data: {
           isRead: true,
         },
@@ -168,7 +234,7 @@ class BookRepo {
   static async unmarkBookAsReadByClub(bookId: string) {
     try {
       const bookMarkAsReadByClub = await prisma.book.update({
-        where:{id: bookId},
+        where: { id: bookId },
         data: {
           isRead: false,
         },

@@ -60,6 +60,23 @@ bookRouter.route("/suggested").get((req, res) => __awaiter(void 0, void 0, void 
             .send({ error: "failed to get suggested books - server error" });
     }
 }));
+//get suggested books paginated
+bookRouter.route("/suggested/:skip").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
+        const books = yield bookRepo_1.default.getBooksWithVotersPaginated(parseInt(req.params.skip));
+        console.log("get suggested books paginated success");
+        const suggestedBooksQuantity = yield bookRepo_1.default.getQuantityOfBooksSuggested();
+        console.log("got quantity of books suggested: ", suggestedBooksQuantity);
+        res.status(200).send({ books: books, count: suggestedBooksQuantity });
+    }
+    catch (error) {
+        console.error("get suggested books paginated failed - " + error);
+        res
+            .status(500)
+            .send({ error: "failed to get suggested books paginated - server error" });
+    }
+}));
 //get read books
 bookRouter.route("/read").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -71,6 +88,21 @@ bookRouter.route("/read").get((req, res) => __awaiter(void 0, void 0, void 0, fu
     catch (error) {
         console.error("get read books failed - " + error);
         res.status(500).send({ error: "failed to get read books - server error" });
+    }
+}));
+//get read books paginated
+bookRouter.route("/read/:skip").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
+        const books = yield bookRepo_1.default.getBooksWithReadersPaginated(parseInt(req.params.skip));
+        console.log("get read books paginated success");
+        const readBooksQuantity = yield bookRepo_1.default.getQuantityOfBooksReadByClub();
+        console.log("got quantity of books read by club: ", readBooksQuantity);
+        res.status(200).send({ books: books, count: readBooksQuantity });
+    }
+    catch (error) {
+        console.error("get read books paginated failed - " + error);
+        res.status(500).send({ error: "failed to get read books paginated - server error" });
     }
 }));
 //unvote on book
