@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const authenticationService_1 = require("../services/authenticationService");
 const userRepo_1 = __importDefault(require("../repository/userRepo"));
+const bookRepo_1 = __importDefault(require("../repository/bookRepo"));
 const adminRouter = (0, express_1.Router)();
 adminRouter
     .route("/signup/requests")
@@ -66,7 +67,51 @@ adminRouter
     }
     catch (error) {
         console.error("delete unauthorized user failed - " + error);
-        res.status(500).send({ error: "failed to delete unauthorized user - server error" });
+        res
+            .status(500)
+            .send({ error: "failed to delete unauthorized user - server error" });
+    }
+}));
+adminRouter
+    .route("/books/markAsReadByClub")
+    .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //mark book as read by club
+    try {
+        console.log("mark book as read by club started - PUT /api/admin/books/markAsReadByClub");
+        const user = authenticationService_1.AuthenticationService.authenticateAdmin(req.headers.authorization);
+        console.log("admin authenticated");
+        const { id } = req.body;
+        console.log("id is: ", id);
+        const bookReadByClub = yield bookRepo_1.default.markBookAsReadByClub(id);
+        console.log("book successfuly marked as read by club");
+        res.status(200).send(bookReadByClub);
+    }
+    catch (error) {
+        console.error("mark book as read by club failed - " + error);
+        res
+            .status(500)
+            .send({ error: "failed to mark book as read by club - server error" });
+    }
+}));
+adminRouter
+    .route("/books/unmarkAsReadByClub")
+    .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //mark book as read by club
+    try {
+        console.log("unmark book as read by club started - PUT /api/admin/books/markAsReadByClub");
+        const user = authenticationService_1.AuthenticationService.authenticateAdmin(req.headers.authorization);
+        console.log("admin authenticated");
+        const { id } = req.body;
+        console.log("id is: ", id);
+        const bookReadByClub = yield bookRepo_1.default.unmarkBookAsReadByClub(id);
+        console.log("book successfuly unmarked as read by club");
+        res.status(200).send(bookReadByClub);
+    }
+    catch (error) {
+        console.error("unmark book as read by club failed - " + error);
+        res
+            .status(500)
+            .send({ error: "failed to unmark book as read by club - server error" });
     }
 }));
 exports.default = adminRouter;

@@ -16,6 +16,7 @@ class BookRepo {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const book = yield prisma.book.findMany({
+                    where: { isRead: false },
                     include: {
                         voters: {
                             select: {
@@ -38,7 +39,7 @@ class BookRepo {
             try {
                 const book = yield prisma.book.findMany({
                     where: {
-                        isRead: true
+                        isRead: true,
                     },
                     include: {
                         readers: {
@@ -166,13 +167,45 @@ class BookRepo {
                     },
                     data: {
                         author: author,
-                        title: title
+                        title: title,
                     },
                 });
                 return updatedBook;
             }
             catch (error) {
                 throw new Error("updateBook failed - " + error);
+            }
+        });
+    }
+    static markBookAsReadByClub(bookId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const bookMarkAsReadByClub = yield prisma.book.update({
+                    where: { id: bookId },
+                    data: {
+                        isRead: true,
+                    },
+                });
+                return bookMarkAsReadByClub;
+            }
+            catch (error) {
+                throw new Error("markBookAsReadByClub failed - " + error);
+            }
+        });
+    }
+    static unmarkBookAsReadByClub(bookId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const bookMarkAsReadByClub = yield prisma.book.update({
+                    where: { id: bookId },
+                    data: {
+                        isRead: false,
+                    },
+                });
+                return bookMarkAsReadByClub;
+            }
+            catch (error) {
+                throw new Error("markBookAsReadByClub failed - " + error);
             }
         });
     }

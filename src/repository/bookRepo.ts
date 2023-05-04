@@ -6,6 +6,7 @@ class BookRepo {
   static async getBooksWithVoters() {
     try {
       const book = await prisma.book.findMany({
+        where: { isRead: false },
         include: {
           voters: {
             select: {
@@ -26,7 +27,7 @@ class BookRepo {
     try {
       const book = await prisma.book.findMany({
         where: {
-          isRead: true
+          isRead: true,
         },
         include: {
           readers: {
@@ -134,7 +135,7 @@ class BookRepo {
       throw new Error("unvoteOnBook failed - " + error);
     }
   }
-  static async updateBook(bookId: string, author: string, title: string){
+  static async updateBook(bookId: string, author: string, title: string) {
     try {
       const updatedBook = await prisma.book.update({
         where: {
@@ -142,13 +143,39 @@ class BookRepo {
         },
         data: {
           author: author,
-          title: title
+          title: title,
         },
       });
 
       return updatedBook;
     } catch (error) {
       throw new Error("updateBook failed - " + error);
+    }
+  }
+  static async markBookAsReadByClub(bookId: string) {
+    try {
+      const bookMarkAsReadByClub = await prisma.book.update({
+        where:{id: bookId},
+        data: {
+          isRead: true,
+        },
+      });
+      return bookMarkAsReadByClub;
+    } catch (error) {
+      throw new Error("markBookAsReadByClub failed - " + error);
+    }
+  }
+  static async unmarkBookAsReadByClub(bookId: string) {
+    try {
+      const bookMarkAsReadByClub = await prisma.book.update({
+        where:{id: bookId},
+        data: {
+          isRead: false,
+        },
+      });
+      return bookMarkAsReadByClub;
+    } catch (error) {
+      throw new Error("markBookAsReadByClub failed - " + error);
     }
   }
 }
