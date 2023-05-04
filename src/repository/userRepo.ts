@@ -88,6 +88,35 @@ class UserRepo {
       throw error;
     }
   }
+  static async makeAdmin(userId: string) {
+    try {
+      return await prisma.user.update({
+        where: { id: userId },
+        data: { isAdmin: true 
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async getSignupRequests(){
+    try{
+      return await prisma.unauthorizedUser.findMany();
+    }
+    catch (error){
+      throw error
+    }
+  }
+  static async deleteUnauthorizedUser(email: string){
+    try{
+      return await prisma.unauthorizedUser.delete({
+        where:{email: email}
+      })
+    }
+    catch (error){
+      throw error
+    }
+  }
 }
 
 export default UserRepo;

@@ -16,14 +16,34 @@ class AuthenticationService {
             }
             const token = authorizationHeader.split(" ")[1];
             const verifyResult = (0, jsonwebtoken_1.verify)(token, process.env.SECRET_KEY);
-            const { id, email } = verifyResult;
+            const { id, email, isAdmin } = verifyResult;
             if (!id || !email) {
                 throw new Error("authorizationHeader invalid - not ID or email extracted from verify()");
             }
-            return { id: id, email: email };
+            return { id: id, email: email, isAdmin: isAdmin };
         }
         catch (error) {
             throw new Error('authenticate failed');
+        }
+    }
+    static authenticateAdmin(authorizationHeader) {
+        try {
+            if (typeof authorizationHeader != "string" || !authorizationHeader.includes("Bearer")) {
+                throw new Error("authorizationHeader invalid");
+            }
+            const token = authorizationHeader.split(" ")[1];
+            const verifyResult = (0, jsonwebtoken_1.verify)(token, process.env.SECRET_KEY);
+            const { id, email, isAdmin } = verifyResult;
+            if (!id || !email) {
+                throw new Error("authorizationHeader invalid - not ID or email extracted from verify()");
+            }
+            if (!isAdmin) {
+                throw new Error("authorizationHeader invalid - not admin");
+            }
+            return { id: id, email: email, isAdmin: isAdmin };
+        }
+        catch (error) {
+            throw new Error('authenticate failed ' + error.message);
         }
     }
 }

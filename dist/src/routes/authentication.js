@@ -29,12 +29,10 @@ authenticationRouter
         console.log(`generated - hashed password: ${hashedPass}`);
         const user = yield userRepo_1.default.getUserByEmailAndPassword(email, hashedPass);
         console.log(`queried - getUserByEmailAndPassword user: ${JSON.stringify(user)}`);
-        const jwt = (0, jsonwebtoken_1.sign)({ id: user.id, email: user.email }, process.env.SECRET_KEY);
+        const jwt = (0, jsonwebtoken_1.sign)({ id: user.id, email: user.email, isAdmin: user.isAdmin }, process.env.SECRET_KEY);
         console.log(`generated - jwt: ${jwt}`);
         console.log("login success");
-        res
-            .status(200)
-            .send({
+        res.status(200).send({
             jwt: jwt,
             user: { name: user.name, id: user.id, email: user.email },
         });

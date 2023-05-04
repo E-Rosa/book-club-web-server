@@ -12,13 +12,14 @@ datasource db {
 }
 
 model User {
-  id            String @id @default(uuid())
+  id            String  @id @default(uuid())
   name          String
-  email         String @unique
+  email         String  @unique
   password      String
-  favoriteBooks Book[] @relation("VotedBooks")
-  postedBooks   Book[] @relation("UserToBooks")
-  readBooks     Book[] @relation("ReadBooks")
+  isAdmin       Boolean @default(false)
+  favoriteBooks Book[]  @relation("VotedBooks")
+  postedBooks   Book[]  @relation("UserToBooks")
+  readBooks     Book[]  @relation("ReadBooks")
 }
 
 model Book {
@@ -32,9 +33,9 @@ model Book {
   isRead       Boolean @default(false)
 }
 
-model UnauthorizedUser{
-    id            String @id @default(uuid())
-    name          String
-    email         String @unique
-    password      String
+model UnauthorizedUser {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
 }

@@ -1,7 +1,6 @@
 import { AuthenticationService } from "../services/authenticationService";
 import { Request, Response, Router } from "express";
 import BookRepo from "../repository/bookRepo";
-import { Book } from "@prisma/client";
 
 const bookRouter = Router();
 

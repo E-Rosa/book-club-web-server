@@ -112,6 +112,42 @@ class UserRepo {
             }
         });
     }
+    static makeAdmin(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield prisma.user.update({
+                    where: { id: userId },
+                    data: { isAdmin: true
+                    },
+                });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    static getSignupRequests() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield prisma.unauthorizedUser.findMany();
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    static deleteUnauthorizedUser(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield prisma.unauthorizedUser.delete({
+                    where: { email: email }
+                });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
 }
 exports.default = UserRepo;
 //# sourceMappingURL=userRepo.js.map
