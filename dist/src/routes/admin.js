@@ -17,7 +17,7 @@ const authenticationService_1 = require("../services/authenticationService");
 const userRepo_1 = __importDefault(require("../repository/userRepo"));
 const adminRouter = (0, express_1.Router)();
 adminRouter
-    .route("/singup/requests")
+    .route("/signup/requests")
     .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //get unauthorized users
     try {
@@ -42,6 +42,7 @@ adminRouter
         const user = authenticationService_1.AuthenticationService.authenticateAdmin(req.headers.authorization);
         console.log("admin authenticated");
         const { email } = req.body;
+        console.log("email is: ", email);
         const newAuthorizedUser = yield userRepo_1.default.acceptSignup(email);
         console.log("user accepted with success, new user is: " + email);
         res.status(200).send(newAuthorizedUser);
@@ -58,6 +59,7 @@ adminRouter
         const user = authenticationService_1.AuthenticationService.authenticateAdmin(req.headers.authorization);
         console.log("admin authenticated");
         const { email } = req.body;
+        console.log("email is: ", email);
         const deletedUnauthorizedUser = yield userRepo_1.default.deleteUnauthorizedUser(email);
         console.log("user deleted with success, user was: " + email);
         res.status(200).send(deletedUnauthorizedUser);

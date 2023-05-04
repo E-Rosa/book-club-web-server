@@ -77,26 +77,6 @@ class UserRepo {
             }
         });
     }
-    static acceptSignup(email) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const unauthorizedUser = yield prisma.unauthorizedUser.delete({
-                    where: { email: email },
-                });
-                return yield prisma.user.create({
-                    data: {
-                        email: email,
-                        name: unauthorizedUser.name,
-                        password: unauthorizedUser.password,
-                        id: unauthorizedUser.id,
-                    },
-                });
-            }
-            catch (error) {
-                throw error;
-            }
-        });
-    }
     static checkEmailAvailability(email) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -129,7 +109,27 @@ class UserRepo {
     static getSignupRequests() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield prisma.unauthorizedUser.findMany();
+                return yield prisma.unauthorizedUser.findMany({ select: { email: true, id: true, name: true } });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    static acceptSignup(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const unauthorizedUser = yield prisma.unauthorizedUser.delete({
+                    where: { email: email },
+                });
+                return yield prisma.user.create({
+                    data: {
+                        email: email,
+                        name: unauthorizedUser.name,
+                        password: unauthorizedUser.password,
+                        id: unauthorizedUser.id,
+                    },
+                });
             }
             catch (error) {
                 throw error;

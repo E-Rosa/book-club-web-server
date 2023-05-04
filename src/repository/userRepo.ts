@@ -59,23 +59,7 @@ class UserRepo {
       throw error;
     }
   }
-  static async acceptSignup(email: string) {
-    try {
-      const unauthorizedUser = await prisma.unauthorizedUser.delete({
-        where: { email: email },
-      });
-      return await prisma.user.create({
-        data: {
-          email: email,
-          name: unauthorizedUser.name,
-          password: unauthorizedUser.password,
-          id: unauthorizedUser.id,
-        },
-      });
-    } catch (error) {
-      throw error;
-    }
-  }
+
   static async checkEmailAvailability(email: string) {
     try {
       const isEmailUsed = await prisma.user.findFirst({
@@ -101,10 +85,27 @@ class UserRepo {
   }
   static async getSignupRequests(){
     try{
-      return await prisma.unauthorizedUser.findMany();
+      return await prisma.unauthorizedUser.findMany({select:{email: true, id: true, name: true}});
     }
     catch (error){
       throw error
+    }
+  }
+  static async acceptSignup(email: string) {
+    try {
+      const unauthorizedUser = await prisma.unauthorizedUser.delete({
+        where: { email: email },
+      });
+      return await prisma.user.create({
+        data: {
+          email: email,
+          name: unauthorizedUser.name,
+          password: unauthorizedUser.password,
+          id: unauthorizedUser.id,
+        },
+      });
+    } catch (error) {
+      throw error;
     }
   }
   static async deleteUnauthorizedUser(email: string){

@@ -5,7 +5,7 @@ import UserRepo from "../repository/userRepo";
 const adminRouter = Router();
 
 adminRouter
-  .route("/singup/requests")
+  .route("/signup/requests")
   .get(async (req: Request, res: Response) => {
     //get unauthorized users
     try {
@@ -31,10 +31,11 @@ adminRouter
     try {
       console.log("accept signup started - PUT /api/admin/signup/requests");
       const user = AuthenticationService.authenticateAdmin(
-        req.headers.authorization
+        req.headers.authorization   
       );
       console.log("admin authenticated");
-      const { email } = req.body;
+      const { email } = req.body
+      console.log("email is: ", email)
       const newAuthorizedUser = await UserRepo.acceptSignup(email);
       console.log("user accepted with success, new user is: " + email);
       res.status(200).send(newAuthorizedUser);
@@ -49,9 +50,10 @@ adminRouter
       console.log("delete unauthorized user started - DELETE /api/admin/signup/requests");
       const user = AuthenticationService.authenticateAdmin(
         req.headers.authorization
-      );
+      )
       console.log("admin authenticated");
       const { email } = req.body;
+      console.log("email is: ", email);
       const deletedUnauthorizedUser = await UserRepo.deleteUnauthorizedUser(email);
       console.log("user deleted with success, user was: " + email);
       res.status(200).send(deletedUnauthorizedUser);
@@ -59,6 +61,6 @@ adminRouter
       console.error("delete unauthorized user failed - " + error);
       res.status(500).send({ error: "failed to delete unauthorized user - server error" });
     }
-  })
+  });
 
 export default adminRouter;
