@@ -112,11 +112,11 @@ class UserRepo {
             }
         });
     }
-    static makeAdmin(userId) {
+    static makeAdmin(email) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 return yield prisma.user.update({
-                    where: { id: userId },
+                    where: { email: email },
                     data: { isAdmin: true
                     },
                 });

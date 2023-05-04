@@ -88,10 +88,10 @@ class UserRepo {
       throw error;
     }
   }
-  static async makeAdmin(userId: string) {
+  static async makeAdmin(email: string) {
     try {
       return await prisma.user.update({
-        where: { id: userId },
+        where: { email: email },
         data: { isAdmin: true 
         },
       });
