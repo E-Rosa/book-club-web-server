@@ -26,7 +26,7 @@ authenticationRouter
       console.log("login success");
       res.status(200).send({
         jwt: jwt,
-        user: { name: user.name, id: user.id, email: user.email },
+        user: { name: user.name, id: user.id, email: user.email, isAdmin:user.isAdmin },
       });
     } catch (error) {
       console.error("login failed - ", error);
