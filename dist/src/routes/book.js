@@ -35,8 +35,8 @@ bookRouter.route("/")
     //edit a book
     try {
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
-        const { author, title, id } = req.body;
-        const updatedBook = yield bookRepo_1.default.updateBook(id, author, title);
+        const { author, title, id, description } = req.body;
+        const updatedBook = yield bookRepo_1.default.updateBook(id, author, title, description);
         console.log("update book success\n book: " + title + " \n user: " + user.email);
         res.status(200).send(updatedBook);
     }

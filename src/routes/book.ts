@@ -22,8 +22,8 @@ bookRouter.route("/")
 //edit a book
   try {
     const user = AuthenticationService.authenticate(req.headers.authorization);
-    const {author, title, id} = req.body
-    const updatedBook = await BookRepo.updateBook(id, author, title)
+    const {author, title, id, description} = req.body
+    const updatedBook = await BookRepo.updateBook(id, author, title, description)
     console.log(
       "update book success\n book: " + title + " \n user: " + user.email
       );

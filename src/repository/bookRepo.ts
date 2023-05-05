@@ -22,7 +22,7 @@ class BookRepo {
     } catch (error) {
       throw error;
     }
-  }
+  };
   static async getBooksWithVotersPaginated(skip: number) {
     try {
       const book = await prisma.book.findMany({
@@ -216,7 +216,7 @@ class BookRepo {
       throw new Error("unvoteOnBook failed - " + error);
     }
   }
-  static async updateBook(bookId: string, author: string, title: string) {
+  static async updateBook(bookId: string, author: string, title: string, description: string) {
     try {
       const updatedBook = await prisma.book.update({
         where: {
@@ -225,6 +225,7 @@ class BookRepo {
         data: {
           author: author,
           title: title,
+          description:description
         },
       });
 

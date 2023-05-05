@@ -34,6 +34,7 @@ class BookRepo {
             }
         });
     }
+    ;
     static getBooksWithVotersPaginated(skip) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -247,7 +248,7 @@ class BookRepo {
             }
         });
     }
-    static updateBook(bookId, author, title) {
+    static updateBook(bookId, author, title, description) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const updatedBook = yield prisma.book.update({
@@ -257,6 +258,7 @@ class BookRepo {
                     data: {
                         author: author,
                         title: title,
+                        description: description
                     },
                 });
                 return updatedBook;
