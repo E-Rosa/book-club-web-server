@@ -50,10 +50,48 @@ class BookRepo {
       throw error;
     }
   }
+  static async getPersonalSuggestestionWithVotersPaginated(skip: number, userId: string) {
+    try {
+      const book = await prisma.book.findMany({
+        skip: skip,
+        take: 10,
+        where: { isRead: false, postAuthorId: userId },
+        include: {
+          voters: {
+            select: {
+              name: true,
+              email: true,
+              id: true,
+            },
+          },
+        },
+        orderBy:{
+          voters:{
+            _count: 'desc'
+          }
+        }
+      });
+
+      return book;
+    } catch (error) {
+      throw error;
+    }
+  }
   static async getQuantityOfBooksSuggested() {
     try {
       const quantity = await prisma.book.count({
         where: { isRead: false },
+      });
+
+      return quantity;
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async getQuantityOfPersonalBooksSuggested(userId: string) {
+    try {
+      const quantity = await prisma.book.count({
+        where: { isRead: false, postAuthorId: userId },
       });
 
       return quantity;

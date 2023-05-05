@@ -64,11 +64,53 @@ class BookRepo {
             }
         });
     }
+    static getPersonalSuggestestionWithVotersPaginated(skip, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const book = yield prisma.book.findMany({
+                    skip: skip,
+                    take: 10,
+                    where: { isRead: false, postAuthorId: userId },
+                    include: {
+                        voters: {
+                            select: {
+                                name: true,
+                                email: true,
+                                id: true,
+                            },
+                        },
+                    },
+                    orderBy: {
+                        voters: {
+                            _count: 'desc'
+                        }
+                    }
+                });
+                return book;
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     static getQuantityOfBooksSuggested() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const quantity = yield prisma.book.count({
                     where: { isRead: false },
+                });
+                return quantity;
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    static getQuantityOfPersonalBooksSuggested(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const quantity = yield prisma.book.count({
+                    where: { isRead: false, postAuthorId: userId },
                 });
                 return quantity;
             }

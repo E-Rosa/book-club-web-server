@@ -17,7 +17,8 @@ const express_1 = require("express");
 const bookRepo_1 = __importDefault(require("../repository/bookRepo"));
 const bookRouter = (0, express_1.Router)();
 //post a book
-bookRouter.route("/")
+bookRouter
+    .route("/")
     .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
@@ -61,7 +62,9 @@ bookRouter.route("/suggested").get((req, res) => __awaiter(void 0, void 0, void 
     }
 }));
 //get suggested books paginated
-bookRouter.route("/suggested/:skip").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+bookRouter
+    .route("/suggested/:skip")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
         const books = yield bookRepo_1.default.getBooksWithVotersPaginated(parseInt(req.params.skip));
@@ -74,7 +77,30 @@ bookRouter.route("/suggested/:skip").get((req, res) => __awaiter(void 0, void 0,
         console.error("get suggested books paginated failed - " + error);
         res
             .status(500)
-            .send({ error: "failed to get suggested books paginated - server error" });
+            .send({
+            error: "failed to get suggested books paginated - server error",
+        });
+    }
+}));
+//get personal suggested books paginated
+bookRouter
+    .route("/:userId/suggested/:skip")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
+        const books = yield bookRepo_1.default.getPersonalSuggestestionWithVotersPaginated(parseInt(req.params.skip), req.params.userId);
+        console.log("get personal suggested books paginated success");
+        const suggestedBooksQuantity = yield bookRepo_1.default.getQuantityOfPersonalBooksSuggested(req.params.userId);
+        console.log("got quantity of books suggested: ", suggestedBooksQuantity);
+        res.status(200).send({ books: books, count: suggestedBooksQuantity });
+    }
+    catch (error) {
+        console.error("get personal suggested books paginated failed - " + error);
+        res
+            .status(500)
+            .send({
+            error: "failed to get personal suggested books paginated - server error",
+        });
     }
 }));
 //get read books
@@ -102,7 +128,9 @@ bookRouter.route("/read/:skip").get((req, res) => __awaiter(void 0, void 0, void
     }
     catch (error) {
         console.error("get read books paginated failed - " + error);
-        res.status(500).send({ error: "failed to get read books paginated - server error" });
+        res
+            .status(500)
+            .send({ error: "failed to get read books paginated - server error" });
     }
 }));
 //unvote on book
@@ -153,12 +181,17 @@ bookRouter.route("/unread/:id").put((req, res) => __awaiter(void 0, void 0, void
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
         const bookId = req.params.id;
         const book = yield bookRepo_1.default.unreadBook(user.id, bookId);
-        console.log("mark book as unread success\n book: " + book.title + " \n user: " + user.email);
+        console.log("mark book as unread success\n book: " +
+            book.title +
+            " \n user: " +
+            user.email);
         res.status(200).send(book);
     }
     catch (error) {
         console.error("mark book as unread failed - " + error);
-        res.status(500).send({ error: "failed to mark book as unread - server error" });
+        res
+            .status(500)
+            .send({ error: "failed to mark book as unread - server error" });
     }
 }));
 exports.default = bookRouter;
