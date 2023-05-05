@@ -38,6 +38,11 @@ class BookRepo {
             },
           },
         },
+        orderBy:{
+          voters:{
+            _count: 'desc'
+          }
+        }
       });
 
       return book;
@@ -71,6 +76,11 @@ class BookRepo {
             },
           },
         },
+        orderBy:{
+          readers:{
+            _count: 'desc'
+          }
+        }
       });
 
       return book;
@@ -93,6 +103,11 @@ class BookRepo {
             },
           },
         },
+        orderBy:{
+          readers:{
+            _count: 'desc'
+          }
+        }
       });
 
       return book;
