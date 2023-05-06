@@ -22,8 +22,8 @@ bookRouter
     .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
-        const { postAuthorId, title, author } = req.body;
-        const book = yield bookRepo_1.default.postBook(postAuthorId, title, author);
+        const { postAuthorId, title, author, description } = req.body;
+        const book = yield bookRepo_1.default.postBook(postAuthorId, title, author, description);
         console.log("post book success - " + book.title);
         res.status(200).send(book);
     }

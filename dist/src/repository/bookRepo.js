@@ -190,7 +190,7 @@ class BookRepo {
             }
         });
     }
-    static postBook(postAuthorId, title, author) {
+    static postBook(postAuthorId, title, author, description) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const book = yield prisma.book.create({
@@ -198,6 +198,7 @@ class BookRepo {
                         postAuthorId: postAuthorId,
                         title: title,
                         author: author,
+                        description: description,
                         voters: {
                             connect: { id: postAuthorId },
                         },

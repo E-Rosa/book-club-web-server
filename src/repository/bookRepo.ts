@@ -164,13 +164,14 @@ class BookRepo {
       throw error;
     }
   }
-  static async postBook(postAuthorId: string, title: string, author: string) {
+  static async postBook(postAuthorId: string, title: string, author: string, description: string) {
     try {
       const book = await prisma.book.create({
         data: {
           postAuthorId: postAuthorId,
           title: title,
           author: author,
+          description: description,
           voters: {
             connect: { id: postAuthorId },
           },

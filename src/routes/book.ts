@@ -12,8 +12,8 @@ bookRouter
       const user = AuthenticationService.authenticate(
         req.headers.authorization
       );
-      const { postAuthorId, title, author } = req.body;
-      const book = await BookRepo.postBook(postAuthorId, title, author);
+      const { postAuthorId, title, author, description } = req.body;
+      const book = await BookRepo.postBook(postAuthorId, title, author, description);
       console.log("post book success - " + book.title);
       res.status(200).send(book);
     } catch (error) {
