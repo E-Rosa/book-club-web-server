@@ -298,6 +298,16 @@ class BookRepo {
       throw new Error("markBookAsReadByClub failed - " + error);
     }
   }
+  static async deleteBook(bookId: string) {
+    try {
+      const deletedBook = await prisma.book.delete({
+        where: { id: bookId }
+      });
+      return deletedBook;
+    } catch (error) {
+      throw new Error("deleteBook failed - " + error);
+    }
+  }
 }
 
 export default BookRepo;

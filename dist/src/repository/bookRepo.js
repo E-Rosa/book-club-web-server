@@ -342,6 +342,19 @@ class BookRepo {
             }
         });
     }
+    static deleteBook(bookId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const deletedBook = yield prisma.book.delete({
+                    where: { id: bookId }
+                });
+                return deletedBook;
+            }
+            catch (error) {
+                throw new Error("deleteBook failed - " + error);
+            }
+        });
+    }
 }
 exports.default = BookRepo;
 //# sourceMappingURL=bookRepo.js.map

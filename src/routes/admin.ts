@@ -118,5 +118,27 @@ adminRouter
         .send({ error: "failed to unmark book as read by club - server error" });
     }
   });
+  adminRouter
+  .route("/books/:bookId")
+  .delete(async (req: Request, res: Response) => {
+    //delete a book
+    try {
+      console.log(
+        "delete book started - DELETE /api/admin/books/:bookId"
+      );
+      const user = AuthenticationService.authenticateAdmin(
+        req.headers.authorization
+      );
+      console.log("admin authenticated");
+      const deletedBook = await BookRepo.deleteBook(req.params.bookId);
+      console.log("deleted book successfully");
+      res.status(200).send(deletedBook);
+    } catch (error) {
+      console.error("delete book failed - " + error);
+      res
+        .status(500)
+        .send({ error: "failed to delete book - server error" });
+    }
+  });
 
 export default adminRouter;
