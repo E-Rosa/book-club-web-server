@@ -43,7 +43,7 @@ meetingRouter.route("/").post((req, res) => __awaiter(void 0, void 0, void 0, fu
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
         console.log("user authenticated");
         const { hostId, date, bookTitle, address, description } = req.body;
-        const postedMeeting = yield meetingRepo_1.default.createMeeting(hostId, date, bookTitle, address, description);
+        const postedMeeting = yield meetingRepo_1.default.createMeeting(hostId, new Date(date), bookTitle, address, description);
         console.log("posted meeting");
         res.status(200).send(postedMeeting);
         console.log("post meeting success");

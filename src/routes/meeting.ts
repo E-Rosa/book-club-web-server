@@ -35,7 +35,7 @@ meetingRouter.route("/").post(async (req: Request, res: Response) => {
     const { hostId, date, bookTitle, address, description } = req.body;
     const postedMeeting = await MeetingRepo.createMeeting(
       hostId,
-      date,
+      new Date(date),
       bookTitle,
       address,
       description
