@@ -59,10 +59,10 @@ meetingRouter
     //edit meeting
     console.log("edit meeting started - PUT /api/meetings/:meetingId");
     try {
-        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.a0uthorization);
+        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
         console.log("user authenticated");
         const { date, bookTitle, address, description } = req.body;
-        const updatedMeeting = yield meetingRepo_1.default.editMeeting(req.params.meetingId, date, bookTitle, address, description);
+        const updatedMeeting = yield meetingRepo_1.default.editMeeting(req.params.meetingId, new Date(date), bookTitle, address, description);
         console.log("updated meeting");
         res.status(200).send(updatedMeeting);
         console.log("edit meeting success");

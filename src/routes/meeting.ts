@@ -56,13 +56,13 @@ meetingRouter
     console.log("edit meeting started - PUT /api/meetings/:meetingId");
     try {
       const user = AuthenticationService.authenticate(
-        req.headers.a0uthorization
+        req.headers.authorization
       );
       console.log("user authenticated");
       const { date, bookTitle, address, description } = req.body;
       const updatedMeeting = await MeetingRepo.editMeeting(
         req.params.meetingId,
-        date,
+        new Date(date),
         bookTitle,
         address,
         description
