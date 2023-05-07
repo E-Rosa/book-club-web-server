@@ -12,14 +12,16 @@ datasource db {
 }
 
 model User {
-  id            String  @id @default(uuid())
-  name          String
-  email         String  @unique
-  password      String
-  isAdmin       Boolean @default(false)
-  favoriteBooks Book[]  @relation("VotedBooks")
-  postedBooks   Book[]  @relation("UserToBooks")
-  readBooks     Book[]  @relation("ReadBooks")
+  id               String    @id @default(uuid())
+  name             String
+  email            String    @unique
+  password         String
+  isAdmin          Boolean   @default(false)
+  favoriteBooks    Book[]    @relation("VotedBooks")
+  postedBooks      Book[]    @relation("UserToBooks")
+  readBooks        Book[]    @relation("ReadBooks")
+  hostedMeetings   Meeting[] @relation("hostToMeeting")
+  attendedMeetings Meeting[] @relation("participantToMeeting")
 }
 
 model Book {
@@ -39,4 +41,15 @@ model UnauthorizedUser {
   name     String
   email    String @unique
   password String
+}
+
+model Meeting {
+  id           String   @id @default(uuid())
+  host         User     @relation("hostToMeeting", fields: [hostId], references: [id])
+  hostId       String
+  date         DateTime @default(now())
+  bookTitle    String
+  address      String
+  description  String   @default("")   
+  participants User[]   @relation("participantToMeeting")
 }
