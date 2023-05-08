@@ -80,7 +80,7 @@ meetingRouter
     console.log("delete meeting started - PUT /api/meetings/:meetingId");
     try {
       const user = AuthenticationService.authenticate(
-        req.headers.a0uthorization
+        req.headers.authorization
       );
       console.log("user authenticated");
 

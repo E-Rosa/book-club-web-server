@@ -76,7 +76,7 @@ meetingRouter
     //delete meeting
     console.log("delete meeting started - PUT /api/meetings/:meetingId");
     try {
-        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.a0uthorization);
+        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
         console.log("user authenticated");
         const deletedMeeting = yield meetingRepo_1.default.deleteMeeting(req.params.meetingId);
         console.log("deleted meeting");
