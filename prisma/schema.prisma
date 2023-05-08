@@ -24,23 +24,40 @@ model User {
   attendedMeetings Meeting[] @relation("participantToMeeting")
 }
 
-model Book {
-  id           String  @id @default(uuid())
-  postAuthor   User    @relation("UserToBooks", fields: [postAuthorId], references: [id])
-  postAuthorId String
-  title        String  @unique
-  author       String
-  voters       User[]  @relation("VotedBooks")
-  readers      User[]  @relation("ReadBooks")
-  isRead       Boolean @default(false)
-  description  String  @default("")
-}
-
 model UnauthorizedUser {
   id       String @id @default(uuid())
   name     String
   email    String @unique
   password String
+}
+
+model Book {
+  id           String        @id @default(uuid())
+  postAuthor   User          @relation("UserToBooks", fields: [postAuthorId], references: [id])
+  postAuthorId String
+  title        String        @unique
+  author       String
+  voters       User[]        @relation("VotedBooks")
+  readers      User[]        @relation("ReadBooks")
+  isRead       Boolean       @default(false)
+  description  String        @default("")
+  BookMetadata BookMetadata?
+}
+
+model BookMetadata {
+  book              Book     @relation(fields: [bookId], references: [id])
+  bookId            String   @id
+  year              DateTime
+  authorNationality String
+  authorGender      String
+  pages             Int
+  tags              Tag[]    @relation("BooksToTags")
+}
+
+model Tag {
+  id    String         @id @default(uuid())
+  name  String
+  books BookMetadata[] @relation("BooksToTags")
 }
 
 model Meeting {
@@ -50,6 +67,6 @@ model Meeting {
   date         DateTime @default(now())
   bookTitle    String
   address      String
-  description  String   @default("")   
+  description  String   @default("")
   participants User[]   @relation("participantToMeeting")
 }
