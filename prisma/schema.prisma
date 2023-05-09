@@ -45,18 +45,25 @@ model Book {
 }
 
 model BookMetadata {
-  book              Book     @relation(fields: [bookId], references: [id])
-  bookId            String   @id
-  year              DateTime
+  book              Book   @relation(fields: [bookId], references: [id])
+  bookId            String @id
+  year              Int
   authorNationality String
   authorGender      String
   pages             Int
-  tags              Tag[]    @relation("BooksToTags")
+  tags              Tag[]  @relation("BooksToTags")
+}
+
+model StaticMetadata {
+  //responsibility: hold static metadata to aliviate the computation requirements
+  //to make it possible to display statistics for client in a cost-effective manner
+  data String
+  id   Int    @id @default(1)
 }
 
 model Tag {
   id    String         @id @default(uuid())
-  name  String
+  name  String         @unique
   books BookMetadata[] @relation("BooksToTags")
 }
 

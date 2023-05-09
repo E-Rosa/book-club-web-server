@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const authenticationService_1 = require("../services/authenticationService");
 const express_1 = require("express");
 const bookRepo_1 = __importDefault(require("../repository/bookRepo"));
+const dataGenerationService_1 = __importDefault(require("../services/dataGenerationService"));
+const bookMetadataRepo_1 = __importDefault(require("../repository/bookMetadataRepo"));
 const bookRouter = (0, express_1.Router)();
 //post a book
 bookRouter
@@ -192,6 +194,20 @@ bookRouter.route("/unread/:id").put((req, res) => __awaiter(void 0, void 0, void
         res
             .status(500)
             .send({ error: "failed to mark book as unread - server error" });
+    }
+}));
+//cron job: get updated metadata and update static metadata
+bookRouter.route("/cron").put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const newMetadata = JSON.stringify(yield dataGenerationService_1.default.getBookStatistics());
+        const newStaticMetadata = yield bookMetadataRepo_1.default.updateStaticMetadata(newMetadata);
+        res.status(200).send(newStaticMetadata.data);
+    }
+    catch (error) {
+        console.error("get and update metadata failed - " + error);
+        res
+            .status(500)
+            .send({ error: "failed to get and update metadata - server error" });
     }
 }));
 exports.default = bookRouter;

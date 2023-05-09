@@ -1,6 +1,8 @@
 import { AuthenticationService } from "../services/authenticationService";
 import { Request, Response, Router } from "express";
 import BookRepo from "../repository/bookRepo";
+import DataGenerationService from "../services/dataGenerationService";
+import BookMetadataRepo from "../repository/bookMetadataRepo";
 
 const bookRouter = Router();
 
@@ -209,5 +211,20 @@ bookRouter.route("/unread/:id").put(async (req: Request, res: Response) => {
       .send({ error: "failed to mark book as unread - server error" });
   }
 });
+
+//cron job: get updated metadata and update static metadata
+bookRouter.route("/cron").put(async (req: Request, res: Response) => {
+  try {
+    const newMetadata = JSON.stringify(await DataGenerationService.getBookStatistics())
+    const newStaticMetadata = await BookMetadataRepo.updateStaticMetadata(newMetadata)
+    res.status(200).send(newStaticMetadata.data)
+  } catch (error) {
+    console.error("get and update metadata failed - " + error);
+    res
+      .status(500)
+      .send({ error: "failed to get and update metadata - server error" });
+  }
+});
+
 
 export default bookRouter;
