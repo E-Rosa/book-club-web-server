@@ -3,6 +3,9 @@ import { Request, Response, Router } from "express";
 import BookRepo from "../repository/bookRepo";
 import DataGenerationService from "../services/dataGenerationService";
 import BookMetadataRepo from "../repository/bookMetadataRepo";
+import { UserBookMetadata } from "../interfaces/interfaces";
+import { constants } from "buffer";
+import TagRepo from "../repository/tagRepo";
 
 const bookRouter = Router();
 
@@ -15,7 +18,12 @@ bookRouter
         req.headers.authorization
       );
       const { postAuthorId, title, author, description } = req.body;
-      const book = await BookRepo.postBook(postAuthorId, title, author, description);
+      const book = await BookRepo.postBook(
+        postAuthorId,
+        title,
+        author,
+        description
+      );
       console.log("post book success - " + book.title);
       res.status(200).send(book);
     } catch (error) {
@@ -78,11 +86,9 @@ bookRouter
       res.status(200).send({ books: books, count: suggestedBooksQuantity });
     } catch (error) {
       console.error("get suggested books paginated failed - " + error);
-      res
-        .status(500)
-        .send({
-          error: "failed to get suggested books paginated - server error",
-        });
+      res.status(500).send({
+        error: "failed to get suggested books paginated - server error",
+      });
     }
   });
 //get personal suggested books paginated
@@ -104,11 +110,10 @@ bookRouter
       res.status(200).send({ books: books, count: suggestedBooksQuantity });
     } catch (error) {
       console.error("get personal suggested books paginated failed - " + error);
-      res
-        .status(500)
-        .send({
-          error: "failed to get personal suggested books paginated - server error",
-        });
+      res.status(500).send({
+        error:
+          "failed to get personal suggested books paginated - server error",
+      });
     }
   });
 
@@ -211,13 +216,108 @@ bookRouter.route("/unread/:id").put(async (req: Request, res: Response) => {
       .send({ error: "failed to mark book as unread - server error" });
   }
 });
+//get book statistics
+bookRouter
+  .route("/statistics")
+  .get(async (req: Request, res: Response) => {
+    try {
+      console.log("trying to get statistics");
+      const user = AuthenticationService.authenticate(
+        req.headers.authorization
+      );
+      console.log("user authenticated");
+      const statistics = await BookMetadataRepo.getStaticMetadata();
+      console.log("get statistics success");
+      res.status(200).send(statistics);
+    } catch (error) {
+      console.error("get statistics failed - " + error);
+      res
+        .status(500)
+        .send({ error: "failed to get statistics - server error" });
+    }
+  })
+  .put(async (req: Request, res: Response) => {
+    //update static book metadata table
+    try {
+      console.log("trying to get statistics");
+      AuthenticationService.authenticateAdmin(req.headers.authorization);
+      console.log("admin authenticated");
+      const updatedStatistics = JSON.stringify(
+        await DataGenerationService.getBookStatistics()
+      );
+      console.log("get updated statistics success");
+      await BookMetadataRepo.updateStaticMetadata(updatedStatistics);
+      console.log("update static metadata success");
+      res.sendStatus(200);
+    } catch (error) {
+      console.error("update static book metadata failed - " + error);
+      res
+        .status(500)
+        .send({
+          error: "failed to update static book metadata - server error",
+        });
+    }
+  });
+
+//post book metadata
+bookRouter
+  .route("/metadata/:bookId")
+  .put(async (req: Request, res: Response) => {
+    try {
+      const user = AuthenticationService.authenticate(
+        req.headers.authorization
+      );
+      const { year, pages, authorNationality, authorGender, tags } = req.body;
+      const bookMetadata = await BookMetadataRepo.createBookMetadataFromUserData(
+        {
+          year: year,
+          pages: pages,
+          authorGender: authorGender,
+          authorNationality: authorNationality,
+          tags: tags
+        },
+        req.params.bookId
+      );
+      res.status(200).send(bookMetadata);
+    } catch (error) {
+      console.error("post book metadata failed - " + error);
+      res.status(500).send({ error: "failed to post book metadata - server error" });
+    }
+  });
+
+//post tags
+bookRouter
+  .route("/metadata/tags")
+  .post(async (req: Request, res: Response) => {
+    try {
+      console.log("/api/books/metadata/tags")
+      console.log("started to post tags")
+      const user = AuthenticationService.authenticate(
+        req.headers.authorization
+      );
+      console.log("user authenticated")
+      const { tags } = req.body;
+      tags.forEach(async (tag: string)=>{
+        await TagRepo.createTag(tag)
+      })
+      console.log("tags created - success")
+      res.status(200);
+    } catch (error) {
+      console.error("post tags failed - " + error);
+      res.status(500).send({ error: "failed to post tags - server error" });
+    }
+  });
 
 //cron job: get updated metadata and update static metadata
 bookRouter.route("/cron").put(async (req: Request, res: Response) => {
   try {
-    const newMetadata = JSON.stringify(await DataGenerationService.getBookStatistics())
-    const newStaticMetadata = await BookMetadataRepo.updateStaticMetadata(newMetadata)
-    res.status(200).send(newStaticMetadata.data)
+    const newMetadata = JSON.stringify(
+      await DataGenerationService.getBookStatistics()
+    );
+    const newStaticMetadata = await BookMetadataRepo.updateStaticMetadata(
+      newMetadata
+    );
+    res.status(200).send(newStaticMetadata.data);
   } catch (error) {
     console.error("get and update metadata failed - " + error);
     res
@@ -225,6 +325,5 @@ bookRouter.route("/cron").put(async (req: Request, res: Response) => {
       .send({ error: "failed to get and update metadata - server error" });
   }
 });
-
 
 export default bookRouter;

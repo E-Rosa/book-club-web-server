@@ -14,8 +14,12 @@ const prisma = new client_1.PrismaClient();
 class TagRepo {
     static createTag(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield prisma.tag.create({
-                data: { name: name },
+            return yield prisma.tag.upsert({
+                where: { name: name },
+                update: { name: name },
+                create: {
+                    name: name,
+                },
             });
         });
     }

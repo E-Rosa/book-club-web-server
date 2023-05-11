@@ -8,26 +8,36 @@ interface BookStatistics {
   totalPagesRead: number;
   avaragePagesPerBook: number;
   bookCountByCentury: BookCountByCentury[];
-  bookCountByGender: BookCountByGender;
+  bookCountByGender: BookCountByGender[];
   bookCountByTag: BookCountByTag[];
   bookCountByAuthorNationality: BookCountByAuthorNationality[];
 }
 
 interface BookCountByCentury {
-  century: number;
-  count: number;
+  name: number;
+  value: number;
 }
 interface BookCountByGender {
-  male: number;
-  female: number;
+  name: string;
+  value: number;
 }
 interface BookCountByTag {
-  tagName: string;
-  count: number;
+  name: string;
+  value: number;
 }
 interface BookCountByAuthorNationality {
-  nationality: string;
-  count: number;
+  name: string;
+  value: number;
+}
+interface UserBookMetadata{
+  year: number;
+  pages: number;
+  authorNationality: string;
+  authorGender: string;
+  tags: UserTag[]
+}
+interface UserTag{
+  tagName: string;
 }
 
 export {
@@ -37,4 +47,6 @@ export {
   BookCountByCentury,
   BookCountByGender,
   BookCountByTag,
+  UserBookMetadata,
+  UserTag
 };

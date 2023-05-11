@@ -17,6 +17,7 @@ const express_1 = require("express");
 const bookRepo_1 = __importDefault(require("../repository/bookRepo"));
 const dataGenerationService_1 = __importDefault(require("../services/dataGenerationService"));
 const bookMetadataRepo_1 = __importDefault(require("../repository/bookMetadataRepo"));
+const tagRepo_1 = __importDefault(require("../repository/tagRepo"));
 const bookRouter = (0, express_1.Router)();
 //post a book
 bookRouter
@@ -77,9 +78,7 @@ bookRouter
     }
     catch (error) {
         console.error("get suggested books paginated failed - " + error);
-        res
-            .status(500)
-            .send({
+        res.status(500).send({
             error: "failed to get suggested books paginated - server error",
         });
     }
@@ -98,9 +97,7 @@ bookRouter
     }
     catch (error) {
         console.error("get personal suggested books paginated failed - " + error);
-        res
-            .status(500)
-            .send({
+        res.status(500).send({
             error: "failed to get personal suggested books paginated - server error",
         });
     }
@@ -194,6 +191,88 @@ bookRouter.route("/unread/:id").put((req, res) => __awaiter(void 0, void 0, void
         res
             .status(500)
             .send({ error: "failed to mark book as unread - server error" });
+    }
+}));
+//get book statistics
+bookRouter
+    .route("/statistics")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log("trying to get statistics");
+        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
+        console.log("user authenticated");
+        const statistics = yield bookMetadataRepo_1.default.getStaticMetadata();
+        console.log("get statistics success");
+        res.status(200).send(statistics);
+    }
+    catch (error) {
+        console.error("get statistics failed - " + error);
+        res
+            .status(500)
+            .send({ error: "failed to get statistics - server error" });
+    }
+}))
+    .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //update static book metadata table
+    try {
+        console.log("trying to get statistics");
+        authenticationService_1.AuthenticationService.authenticateAdmin(req.headers.authorization);
+        console.log("admin authenticated");
+        const updatedStatistics = JSON.stringify(yield dataGenerationService_1.default.getBookStatistics());
+        console.log("get updated statistics success");
+        yield bookMetadataRepo_1.default.updateStaticMetadata(updatedStatistics);
+        console.log("update static metadata success");
+        res.sendStatus(200);
+    }
+    catch (error) {
+        console.error("update static book metadata failed - " + error);
+        res
+            .status(500)
+            .send({
+            error: "failed to update static book metadata - server error",
+        });
+    }
+}));
+//post book metadata
+bookRouter
+    .route("/metadata/:bookId")
+    .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
+        const { year, pages, authorNationality, authorGender, tags } = req.body;
+        const bookMetadata = yield bookMetadataRepo_1.default.createBookMetadataFromUserData({
+            year: year,
+            pages: pages,
+            authorGender: authorGender,
+            authorNationality: authorNationality,
+            tags: tags
+        }, req.params.bookId);
+        res.status(200).send(bookMetadata);
+    }
+    catch (error) {
+        console.error("post book metadata failed - " + error);
+        res.status(500).send({ error: "failed to post book metadata - server error" });
+    }
+}));
+//post tags
+bookRouter
+    .route("/metadata/tags")
+    .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log("/api/books/metadata/tags");
+        console.log("started to post tags");
+        const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
+        console.log("user authenticated");
+        const { tags } = req.body;
+        tags.forEach((tag) => __awaiter(void 0, void 0, void 0, function* () {
+            yield tagRepo_1.default.createTag(tag);
+        }));
+        console.log("tags created - success");
+        res.status(200);
+    }
+    catch (error) {
+        console.error("post tags failed - " + error);
+        res.status(500).send({ error: "failed to post tags - server error" });
     }
 }));
 //cron job: get updated metadata and update static metadata

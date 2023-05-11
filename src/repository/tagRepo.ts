@@ -3,8 +3,12 @@ const prisma = new PrismaClient();
 
 class TagRepo {
   static async createTag(name: string) {
-    return await prisma.tag.create({
-      data: { name: name },
+    return await prisma.tag.upsert({
+      where: { name: name },
+      update: { name: name },
+      create: {
+        name: name,
+      },
     });
   }
   static async getTagIdByName(name: string) {
@@ -16,7 +20,7 @@ class TagRepo {
       if (result == null) {
         throw new Error("cant get tag id by name");
       }
-      return result.id
+      return result.id;
     } catch (error) {
       throw error;
     }

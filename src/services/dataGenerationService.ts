@@ -37,10 +37,10 @@ class DataGenerationService {
         totalBooks: totalBooks,
         totalPagesRead: booksTotalPageCount,
         avaragePagesPerBook: Math.ceil(booksPageCountAverage),
-        bookCountByCentury: bookCountByCentury,
-        bookCountByGender: bookCountByGender,
-        bookCountByTag: booksCountByTag,
-        bookCountByAuthorNationality: bookCountByAuthorNationality,
+        bookCountByCentury: bookCountByCentury.sort((a,b)=>b.value - a.value),
+        bookCountByGender: bookCountByGender.sort((a,b)=>b.value - a.value),
+        bookCountByTag: booksCountByTag.sort((a,b)=>b.value - a.value),
+        bookCountByAuthorNationality: bookCountByAuthorNationality.sort((a,b)=>b.value - a.value),
       };
     } catch (error) {
       throw error;
@@ -49,19 +49,19 @@ class DataGenerationService {
   static getBooksQuantityByCentury(bookYears: number[]): BookCountByCentury[] {
     try {
       let result: BookCountByCentury[] = [];
-      const resultContainsCentury = (century: number) => {
+      const resultContainsCentury = (name: number) => {
         return result.find((centuryObject) => {
-          return centuryObject.century == century;
+          return centuryObject.name == name;
         }) == undefined
           ? false
           : true;
       };
-      const addOneToCentury = (century: number) => {
+      const addOneToCentury = (name: number) => {
         result = result.map((centuryObject) => {
-          if (centuryObject.century == century) {
+          if (centuryObject.name == name) {
             return {
               ...centuryObject,
-              count: centuryObject.count + 1,
+              value: centuryObject.value + 1,
             };
           } else {
             return centuryObject;
@@ -69,11 +69,11 @@ class DataGenerationService {
         });
       };
       bookYears.forEach((year, index) => {
-        const century = Math.ceil(year / 100);
-        if (resultContainsCentury(century)) {
-          addOneToCentury(century);
+        const name = Math.ceil(year / 100);
+        if (resultContainsCentury(name)) {
+          addOneToCentury(name);
         } else {
-          result.push({ century: century, count: 1 });
+          result.push({ name: name, value: 1 });
         }
       });
       return result;
@@ -81,13 +81,26 @@ class DataGenerationService {
       throw error;
     }
   }
-  static getBooksCountByGender(gendersArray: string[]): BookCountByGender {
-    let count = { male: 0, female: 0 };
+  static getBooksCountByGender(gendersArray: string[]): BookCountByGender[] {
+    let count = [
+      { name: "male", value: 0 },
+      { name: "female", value: 0 },
+    ];
     gendersArray.forEach((gender) => {
       if (gender == "masculino") {
-        count = { ...count, male: count.male + 1 };
+        count = count.map((countObject) => {
+          if (countObject.name == "male") {
+            return { ...countObject, value: countObject.value + 1 };
+          }
+          return countObject;
+        });
       } else if (gender == "feminino") {
-        count = { ...count, female: count.female + 1 };
+        count = count.map((countObject) => {
+          if (countObject.name == "female") {
+            return { ...countObject, value: countObject.value + 1 };
+          }
+          return countObject;
+        });
       } else if (gender == "desconhecido" || gender == "desconhecida") {
       } else {
         throw new Error(
@@ -101,17 +114,17 @@ class DataGenerationService {
   static getBooksCountByTags(tags: string[][]): BookCountByTag[] {
     let count: BookCountByTag[] = [];
     tags.forEach((tagArray) => {
-      tagArray.forEach((tagName) => {
+      tagArray.forEach((name) => {
         const tagIsNew =
-          count.find((tagCount) => tagCount.tagName == tagName) == undefined
+          count.find((tagCount) => tagCount.name == name) == undefined
             ? true
             : false;
         if (tagIsNew) {
-          count.push({ tagName: tagName, count: 1 });
+          count.push({ name: name, value: 1 });
         } else {
           count = count.map((tagCount) => {
-            if (tagCount.tagName == tagName) {
-              return { ...tagCount, count: tagCount.count + 1 };
+            if (tagCount.name == name) {
+              return { ...tagCount, value: tagCount.value + 1 };
             } else {
               return tagCount;
             }
@@ -144,23 +157,23 @@ class DataGenerationService {
   ): BookCountByAuthorNationality[] {
     try {
       let result: BookCountByAuthorNationality[] = [];
-      authorNationalities.map((nationality) => {
+      authorNationalities.map((name) => {
         const nationalityAlreadyExists =
           result.find((nationalityCount) => {
-            return nationalityCount.nationality == nationality;
+            return nationalityCount.name == name;
           }) == undefined
             ? false
             : true;
         if (nationalityAlreadyExists) {
           result = result.map((nationalityCount) => {
-            if (nationalityCount.nationality == nationality) {
-              return { ...nationalityCount, count: nationalityCount.count + 1 };
+            if (nationalityCount.name == name) {
+              return { ...nationalityCount, value: nationalityCount.value + 1 };
             } else {
               return nationalityCount;
             }
           });
         } else {
-          result.push({ nationality: nationality, count: 1 });
+          result.push({ name: name, value: 1 });
         }
       });
       return result;

@@ -69,8 +69,8 @@ class BookMetadataRepo {
                 return yield prisma.bookMetadata.findMany({
                     include: {
                         book: true,
-                        tags: true
-                    }
+                        tags: true,
+                    },
                 });
             }
             catch (error) {
@@ -98,8 +98,30 @@ class BookMetadataRepo {
                 return yield prisma.staticMetadata.update({
                     where: { id: 1 },
                     data: {
-                        data: metadataStringfied
-                    }
+                        data: metadataStringfied,
+                    },
+                });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    static createBookMetadataFromUserData(metadata, bookId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield prisma.bookMetadata.create({
+                    data: {
+                        authorGender: metadata.authorGender,
+                        authorNationality: metadata.authorNationality,
+                        pages: metadata.pages,
+                        year: metadata.year,
+                        book: {
+                            connect: {
+                                id: bookId,
+                            },
+                        },
+                    },
                 });
             }
             catch (error) {

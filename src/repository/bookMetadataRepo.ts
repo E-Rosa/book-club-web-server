@@ -1,4 +1,5 @@
 import { PrismaClient, BookMetadata, Tag } from "@prisma/client";
+import { UserBookMetadata } from "../interfaces/interfaces";
 const prisma = new PrismaClient();
 
 class BookMetadataRepo {
@@ -59,38 +60,58 @@ class BookMetadataRepo {
   static async getAllBookMetadataWithTagsAndBooks() {
     try {
       return await prisma.bookMetadata.findMany({
-        include:{
+        include: {
           book: true,
-          tags: true
-        }
-      })
+          tags: true,
+        },
+      });
     } catch (error) {
       throw error;
     }
   }
-  static async getStaticMetadata(){
-    try{
+  static async getStaticMetadata() {
+    try {
       const metadata = await prisma.staticMetadata.findFirst();
-      if(metadata == null){
-        throw new Error("no static metadata found")
+      if (metadata == null) {
+        throw new Error("no static metadata found");
       }
-      return metadata.data
-    }
-    catch (error){
-      throw error
+      return metadata.data;
+    } catch (error) {
+      throw error;
     }
   }
-  static async updateStaticMetadata(metadataStringfied: string){
-    try{
+  static async updateStaticMetadata(metadataStringfied: string) {
+    try {
       return await prisma.staticMetadata.update({
-        where: {id: 1},
-        data:{
-          data: metadataStringfied
-        }
-      })
+        where: { id: 1 },
+        data: {
+          data: metadataStringfied,
+        },
+      });
+    } catch (error) {
+      throw error;
     }
-    catch (error){
-      throw error
+  }
+  static async createBookMetadataFromUserData(
+    metadata: UserBookMetadata,
+    bookId: string
+  ) {
+    try {
+      return await prisma.bookMetadata.create({
+        data: {
+          authorGender: metadata.authorGender,
+          authorNationality: metadata.authorNationality,
+          pages: metadata.pages,
+          year: metadata.year,
+          book: {
+            connect: {
+              id: bookId,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      throw error;
     }
   }
 }
