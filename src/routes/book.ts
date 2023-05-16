@@ -3,9 +3,8 @@ import { Request, Response, Router } from "express";
 import BookRepo from "../repository/bookRepo";
 import DataGenerationService from "../services/dataGenerationService";
 import BookMetadataRepo from "../repository/bookMetadataRepo";
-import { UserBookMetadata } from "../interfaces/interfaces";
-import { constants } from "buffer";
 import TagRepo from "../repository/tagRepo";
+
 
 const bookRouter = Router();
 
@@ -25,6 +24,7 @@ bookRouter
         description
       );
       console.log("post book success - " + book.title);
+      console.log("book is: ", book)
       res.status(200).send(book);
     } catch (error) {
       console.error("post book failed - " + error);
@@ -38,6 +38,7 @@ bookRouter
         req.headers.authorization
       );
       const { author, title, id, description } = req.body;
+      console.log('received id and title: ', id, title)
       const updatedBook = await BookRepo.updateBook(
         id,
         author,
@@ -133,7 +134,7 @@ bookRouter.route("/read").get(async (req: Request, res: Response) => {
 bookRouter.route("/read/:skip").get(async (req: Request, res: Response) => {
   try {
     const user = AuthenticationService.authenticate(req.headers.authorization);
-    const books = await BookRepo.getBooksWithReadersPaginated(
+    const books = await BookRepo.getBooksWithReadersAndMetadataPaginated(
       parseInt(req.params.skip)
     );
     console.log("get read books paginated success");
@@ -270,8 +271,8 @@ bookRouter
       const { year, pages, authorNationality, authorGender, tags } = req.body;
       const bookMetadata = await BookMetadataRepo.createBookMetadataFromUserData(
         {
-          year: year,
-          pages: pages,
+          year: parseInt(year),
+          pages: parseInt(pages),
           authorGender: authorGender,
           authorNationality: authorNationality,
           tags: tags
@@ -301,7 +302,7 @@ bookRouter
         await TagRepo.createTag(tag)
       })
       console.log("tags created - success")
-      res.status(200);
+      res.sendStatus(200);
     } catch (error) {
       console.error("post tags failed - " + error);
       res.status(500).send({ error: "failed to post tags - server error" });

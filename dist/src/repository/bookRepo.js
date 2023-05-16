@@ -148,7 +148,7 @@ class BookRepo {
             }
         });
     }
-    static getBooksWithReadersPaginated(skip) {
+    static getBooksWithReadersAndMetadataPaginated(skip) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const book = yield prisma.book.findMany({
@@ -162,6 +162,15 @@ class BookRepo {
                                 email: true,
                                 id: true,
                             },
+                        },
+                        BookMetadata: {
+                            include: {
+                                tags: {
+                                    select: {
+                                        name: true
+                                    }
+                                }
+                            }
                         },
                     },
                     orderBy: {
@@ -299,6 +308,7 @@ class BookRepo {
                         id: bookId,
                     },
                     data: {
+                        id: bookId,
                         author: author,
                         title: title,
                         description: description
@@ -347,7 +357,7 @@ class BookRepo {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const deletedBook = yield prisma.book.delete({
-                    where: { id: bookId }
+                    where: { id: bookId },
                 });
                 return deletedBook;
             }

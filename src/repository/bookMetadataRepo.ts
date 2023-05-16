@@ -97,8 +97,20 @@ class BookMetadataRepo {
     bookId: string
   ) {
     try {
-      return await prisma.bookMetadata.create({
-        data: {
+      return await prisma.bookMetadata.upsert({
+        where: { bookId: bookId },
+        update: {
+          authorGender: metadata.authorGender,
+          authorNationality: metadata.authorNationality,
+          pages: metadata.pages,
+          year: metadata.year,
+          book: {
+            connect: {
+              id: bookId,
+            },
+          },
+        },
+        create: {
           authorGender: metadata.authorGender,
           authorNationality: metadata.authorNationality,
           pages: metadata.pages,

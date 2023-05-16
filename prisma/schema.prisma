@@ -41,12 +41,12 @@ model Book {
   readers      User[]        @relation("ReadBooks")
   isRead       Boolean       @default(false)
   description  String        @default("")
-  BookMetadata BookMetadata?
+  BookMetadata BookMetadata? 
 }
 
 model BookMetadata {
-  book              Book   @relation(fields: [bookId], references: [id])
-  bookId            String @id
+  book              Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId            String @id @unique
   year              Int
   authorNationality String
   authorGender      String

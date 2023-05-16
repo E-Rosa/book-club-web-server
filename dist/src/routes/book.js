@@ -28,6 +28,7 @@ bookRouter
         const { postAuthorId, title, author, description } = req.body;
         const book = yield bookRepo_1.default.postBook(postAuthorId, title, author, description);
         console.log("post book success - " + book.title);
+        console.log("book is: ", book);
         res.status(200).send(book);
     }
     catch (error) {
@@ -40,6 +41,7 @@ bookRouter
     try {
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
         const { author, title, id, description } = req.body;
+        console.log('received id and title: ', id, title);
         const updatedBook = yield bookRepo_1.default.updateBook(id, author, title, description);
         console.log("update book success\n book: " + title + " \n user: " + user.email);
         res.status(200).send(updatedBook);
@@ -119,7 +121,7 @@ bookRouter.route("/read").get((req, res) => __awaiter(void 0, void 0, void 0, fu
 bookRouter.route("/read/:skip").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
-        const books = yield bookRepo_1.default.getBooksWithReadersPaginated(parseInt(req.params.skip));
+        const books = yield bookRepo_1.default.getBooksWithReadersAndMetadataPaginated(parseInt(req.params.skip));
         console.log("get read books paginated success");
         const readBooksQuantity = yield bookRepo_1.default.getQuantityOfBooksReadByClub();
         console.log("got quantity of books read by club: ", readBooksQuantity);
@@ -241,8 +243,8 @@ bookRouter
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
         const { year, pages, authorNationality, authorGender, tags } = req.body;
         const bookMetadata = yield bookMetadataRepo_1.default.createBookMetadataFromUserData({
-            year: year,
-            pages: pages,
+            year: parseInt(year),
+            pages: parseInt(pages),
             authorGender: authorGender,
             authorNationality: authorNationality,
             tags: tags
@@ -268,7 +270,7 @@ bookRouter
             yield tagRepo_1.default.createTag(tag);
         }));
         console.log("tags created - success");
-        res.status(200);
+        res.sendStatus(200);
     }
     catch (error) {
         console.error("post tags failed - " + error);

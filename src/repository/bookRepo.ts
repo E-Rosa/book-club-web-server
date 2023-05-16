@@ -126,7 +126,7 @@ class BookRepo {
       throw error;
     }
   }
-  static async getBooksWithReadersPaginated(skip: number) {
+  static async getBooksWithReadersAndMetadataPaginated(skip: number) {
     try {
       const book = await prisma.book.findMany({
         skip: skip,
@@ -140,6 +140,16 @@ class BookRepo {
               id: true,
             },
           },
+        BookMetadata: {
+            include:{
+              tags: {
+                select:{
+                  name:true
+                }
+              }
+            }
+          },
+
         },
         orderBy:{
           readers:{
@@ -262,6 +272,7 @@ class BookRepo {
           id: bookId,
         },
         data: {
+          id: bookId,
           author: author,
           title: title,
           description:description
@@ -302,7 +313,7 @@ class BookRepo {
   static async deleteBook(bookId: string) {
     try {
       const deletedBook = await prisma.book.delete({
-        where: { id: bookId }
+        where: { id: bookId },
       });
       return deletedBook;
     } catch (error) {
