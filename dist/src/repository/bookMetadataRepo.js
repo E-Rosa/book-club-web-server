@@ -95,10 +95,14 @@ class BookMetadataRepo {
     static updateStaticMetadata(metadataStringfied) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield prisma.staticMetadata.update({
+                return yield prisma.staticMetadata.upsert({
                     where: { id: 1 },
-                    data: {
+                    update: {
                         data: metadataStringfied,
+                    },
+                    create: {
+                        data: metadataStringfied,
+                        id: 1
                     },
                 });
             }

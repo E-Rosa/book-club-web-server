@@ -82,10 +82,14 @@ class BookMetadataRepo {
   }
   static async updateStaticMetadata(metadataStringfied: string) {
     try {
-      return await prisma.staticMetadata.update({
+      return await prisma.staticMetadata.upsert({
         where: { id: 1 },
-        data: {
+        update: {
           data: metadataStringfied,
+        },
+        create: {
+          data: metadataStringfied,
+          id: 1
         },
       });
     } catch (error) {
