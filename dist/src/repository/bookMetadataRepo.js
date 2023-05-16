@@ -145,6 +145,28 @@ class BookMetadataRepo {
             }
         });
     }
+    static connectTags(bookId, tags) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                for (let i = 0; i < tags.length; i++) {
+                    yield prisma.bookMetadata.update({
+                        where: { bookId: bookId },
+                        data: {
+                            tags: {
+                                connectOrCreate: {
+                                    where: { name: tags[i] },
+                                    create: { name: tags[i] }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
 }
 exports.default = BookMetadataRepo;
 //# sourceMappingURL=bookMetadataRepo.js.map

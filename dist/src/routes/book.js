@@ -240,7 +240,9 @@ bookRouter
     .route("/metadata/:bookId")
     .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log("started to update metadata");
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
+        console.log("user authenticated");
         const { year, pages, authorNationality, authorGender, tags } = req.body;
         const bookMetadata = yield bookMetadataRepo_1.default.createBookMetadataFromUserData({
             year: parseInt(year),
@@ -249,6 +251,9 @@ bookRouter
             authorNationality: authorNationality,
             tags: tags
         }, req.params.bookId);
+        console.log("post book metadata success");
+        yield bookMetadataRepo_1.default.connectTags(bookMetadata.bookId, tags);
+        console.log("tags connected");
         res.status(200).send(bookMetadata);
     }
     catch (error) {

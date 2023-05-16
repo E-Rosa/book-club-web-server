@@ -265,9 +265,11 @@ bookRouter
   .route("/metadata/:bookId")
   .put(async (req: Request, res: Response) => {
     try {
+      console.log("started to update metadata")
       const user = AuthenticationService.authenticate(
         req.headers.authorization
       );
+      console.log("user authenticated")
       const { year, pages, authorNationality, authorGender, tags } = req.body;
       const bookMetadata = await BookMetadataRepo.createBookMetadataFromUserData(
         {
@@ -279,6 +281,9 @@ bookRouter
         },
         req.params.bookId
       );
+      console.log("post book metadata success")
+      await BookMetadataRepo.connectTags(bookMetadata.bookId, tags)
+      console.log("tags connected")
       res.status(200).send(bookMetadata);
     } catch (error) {
       console.error("post book metadata failed - " + error);

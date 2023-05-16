@@ -130,6 +130,28 @@ class BookMetadataRepo {
       throw error;
     }
   }
+  static async connectTags(bookId: string, tags: string[]){
+    try{
+      for(let i=0; i<tags.length; i++){
+        await prisma.bookMetadata.update(
+          {
+            where:{bookId: bookId},
+            data:{
+              tags:{
+                connectOrCreate:{
+                  where:{name: tags[i]},
+                  create:{name: tags[i]}
+                }
+              }
+            }
+          }
+        )
+      }
+      
+    }catch (error){
+      throw error
+    }
+  }
 }
 
 export default BookMetadataRepo;
