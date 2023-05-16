@@ -5,7 +5,6 @@ import DataGenerationService from "../services/dataGenerationService";
 import BookMetadataRepo from "../repository/bookMetadataRepo";
 import TagRepo from "../repository/tagRepo";
 
-
 const bookRouter = Router();
 
 //post a book
@@ -24,7 +23,7 @@ bookRouter
         description
       );
       console.log("post book success - " + book.title);
-      console.log("book is: ", book)
+      console.log("book is: ", book);
       res.status(200).send(book);
     } catch (error) {
       console.error("post book failed - " + error);
@@ -38,7 +37,7 @@ bookRouter
         req.headers.authorization
       );
       const { author, title, id, description } = req.body;
-      console.log('received id and title: ', id, title)
+      console.log("received id and title: ", id, title);
       const updatedBook = await BookRepo.updateBook(
         id,
         author,
@@ -252,11 +251,9 @@ bookRouter
       res.sendStatus(200);
     } catch (error) {
       console.error("update static book metadata failed - " + error);
-      res
-        .status(500)
-        .send({
-          error: "failed to update static book metadata - server error",
-        });
+      res.status(500).send({
+        error: "failed to update static book metadata - server error",
+      });
     }
   });
 
@@ -265,54 +262,54 @@ bookRouter
   .route("/metadata/:bookId")
   .put(async (req: Request, res: Response) => {
     try {
-      console.log("started to update metadata")
+      console.log("started to update metadata");
       const user = AuthenticationService.authenticate(
         req.headers.authorization
       );
-      console.log("user authenticated")
-      const { year, pages, authorNationality, authorGender, tags } = req.body;
-      const bookMetadata = await BookMetadataRepo.createBookMetadataFromUserData(
-        {
-          year: parseInt(year),
-          pages: parseInt(pages),
-          authorGender: authorGender,
-          authorNationality: authorNationality,
-          tags: tags
-        },
-        req.params.bookId
-      );
-      console.log("post book metadata success")
-      await BookMetadataRepo.connectTags(bookMetadata.bookId, tags)
-      console.log("tags connected")
+      console.log("user authenticated");
+      const { metadata, tags } = req.body;
+      const { year, pages, authorNationality, authorGender } = metadata;
+      const bookMetadata =
+        await BookMetadataRepo.createBookMetadataFromUserData(
+          {
+            year: parseInt(year),
+            pages: parseInt(pages),
+            authorGender: authorGender,
+            authorNationality: authorNationality,
+            tags: tags,
+          },
+          req.params.bookId
+        );
+      console.log("post book metadata success");
+      await BookMetadataRepo.connectTags(bookMetadata.bookId, tags);
+      console.log("tags connected");
       res.status(200).send(bookMetadata);
     } catch (error) {
       console.error("post book metadata failed - " + error);
-      res.status(500).send({ error: "failed to post book metadata - server error" });
+      res
+        .status(500)
+        .send({ error: "failed to post book metadata - server error" });
     }
   });
 
 //post tags
-bookRouter
-  .route("/metadata/tags")
-  .post(async (req: Request, res: Response) => {
-    try {
-      console.log("/api/books/metadata/tags")
-      console.log("started to post tags")
-      const user = AuthenticationService.authenticate(
-        req.headers.authorization
-      );
-      console.log("user authenticated")
-      const { tags } = req.body;
-      tags.forEach(async (tag: string)=>{
-        await TagRepo.createTag(tag)
-      })
-      console.log("tags created - success")
-      res.sendStatus(200);
-    } catch (error) {
-      console.error("post tags failed - " + error);
-      res.status(500).send({ error: "failed to post tags - server error" });
-    }
-  });
+bookRouter.route("/metadata/tags").post(async (req: Request, res: Response) => {
+  try {
+    console.log("/api/books/metadata/tags");
+    console.log("started to post tags");
+    const user = AuthenticationService.authenticate(req.headers.authorization);
+    console.log("user authenticated");
+    const { tags } = req.body;
+    tags.forEach(async (tag: string) => {
+      await TagRepo.createTag(tag);
+    });
+    console.log("tags created - success");
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("post tags failed - " + error);
+    res.status(500).send({ error: "failed to post tags - server error" });
+  }
+});
 
 //cron job: get updated metadata and update static metadata
 bookRouter.route("/cron").put(async (req: Request, res: Response) => {

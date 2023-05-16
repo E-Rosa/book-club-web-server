@@ -41,7 +41,7 @@ bookRouter
     try {
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
         const { author, title, id, description } = req.body;
-        console.log('received id and title: ', id, title);
+        console.log("received id and title: ", id, title);
         const updatedBook = yield bookRepo_1.default.updateBook(id, author, title, description);
         console.log("update book success\n book: " + title + " \n user: " + user.email);
         res.status(200).send(updatedBook);
@@ -228,9 +228,7 @@ bookRouter
     }
     catch (error) {
         console.error("update static book metadata failed - " + error);
-        res
-            .status(500)
-            .send({
+        res.status(500).send({
             error: "failed to update static book metadata - server error",
         });
     }
@@ -243,13 +241,14 @@ bookRouter
         console.log("started to update metadata");
         const user = authenticationService_1.AuthenticationService.authenticate(req.headers.authorization);
         console.log("user authenticated");
-        const { year, pages, authorNationality, authorGender, tags } = req.body;
+        const { metadata, tags } = req.body;
+        const { year, pages, authorNationality, authorGender } = metadata;
         const bookMetadata = yield bookMetadataRepo_1.default.createBookMetadataFromUserData({
             year: parseInt(year),
             pages: parseInt(pages),
             authorGender: authorGender,
             authorNationality: authorNationality,
-            tags: tags
+            tags: tags,
         }, req.params.bookId);
         console.log("post book metadata success");
         yield bookMetadataRepo_1.default.connectTags(bookMetadata.bookId, tags);
@@ -258,13 +257,13 @@ bookRouter
     }
     catch (error) {
         console.error("post book metadata failed - " + error);
-        res.status(500).send({ error: "failed to post book metadata - server error" });
+        res
+            .status(500)
+            .send({ error: "failed to post book metadata - server error" });
     }
 }));
 //post tags
-bookRouter
-    .route("/metadata/tags")
-    .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+bookRouter.route("/metadata/tags").post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log("/api/books/metadata/tags");
         console.log("started to post tags");
